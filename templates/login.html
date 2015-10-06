@@ -1,18 +1,26 @@
 {% extends 'base_template.html' %}
 {% block body_app %}
-{% for user in users %}
-    {% if user.user.is_authenticated %}
-    <form method="post" action="{% url 'django.contrib.auth.views.login %}">
+
+    {% for user in users %}
+        {% if user.user.is_authenticated %}
+            <p>Hello =)</p>
+        {% else %}
+            <p>Please login!!!</p>
+        {% endif %}
+        <form method="post" action="{% url 'django.contrib.auth.views.login' %}">
 
 
         {% csrf_token %}
-
-
-            {{ user.user.label_tag }}
+        <div>
+            {{ user.user.username.label_tag }}
             {{ user.user.username }}
-
+        </div>
+        <div>
+            {{ user.user.password.label_tag }}
+            {{ user.user.password }}
+        </div>
         {% endfor %}
-
         <input type="submit" class="btn btn-default" value="Login" />
+
     </form>
 {% endblock %}
