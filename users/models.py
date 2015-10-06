@@ -1,12 +1,8 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 
-# Create your models here.
 class Users(models.Model):
-    first_name = models.CharField(max_length=200)
-    last_name = models.CharField(max_length=200)
-    email = models.CharField(max_length=200)
+    user = models.OneToOneField(User)
     photo = models.CharField(max_length=200)
-    id_team = models.IntegerField()
-    rang = models.DecimalField()
-    is_admin = models.BooleanField()
+    rang = models.DecimalField(max_digits=2, decimal_places=2)
