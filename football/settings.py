@@ -70,6 +70,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'football.context_settings.get_names',
             ],
         },
     },
@@ -115,4 +116,5 @@ STATICFILES_DIRS = (
     os.path.join(BASE_DIR, "static"),
 )
 
-LOGIN_REDIRECT_URL = '/index/'
+LOGIN_REDIRECT_URL = '/index/loggedin/'
+REDIRECT_FIELD_NAME = '/index/logout/'

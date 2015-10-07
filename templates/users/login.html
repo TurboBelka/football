@@ -1,0 +1,11 @@
+{% extends 'base_template.html' %}
+ {% block body_app %}
+    <form method="post" action="">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" class="btn btn-default" value="Login" />
+    </form>
+    <a href="/index/registration/">
+        <input type="button" value="Registration"/>
+    </a>
+{% endblock %}

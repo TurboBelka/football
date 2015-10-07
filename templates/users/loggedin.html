@@ -1,0 +1,6 @@
+{% extends 'base_template.html' %}
+{% block body_app %}
+    {% if user.is_authenticated %}
+        <p>You are loggedin</p>
+    {% endif %}
+{% endblock %}

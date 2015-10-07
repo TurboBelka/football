@@ -4,7 +4,7 @@ from .models import Users
 from django.contrib.auth.forms import UserCreationForm
 
 
-class UsersForm(UserCreationForm):
+class RegistrationForm(UserCreationForm):
     photo = ImageField()
 
     class Meta:
@@ -13,9 +13,11 @@ class UsersForm(UserCreationForm):
                   'password1', 'password2']
 
     def save(self, commit=True):
-        user = super(UsersForm, self).save(commit=False)
-        my_user = Users(user=user)
-        my_user.photo = self.cleaned_data['photo']
+        print 123
+        user = super(RegistrationForm, self).save(commit=commit)
+        print user
+        new_user = Users(user=user)
+        new_user.photo = self.cleaned_data['photo']
         if commit:
-            my_user.save()
-        return my_user
+            new_user.save()
+        return new_user

@@ -22,15 +22,17 @@
     <div id="menu_list" class="container-fluid">
         <div class="collapse navbar-collapse">
         <ul id="menu" class="nav navbar-nav">
-            <li>My profile</li>
-            <li>Tournament</li>
-            <li>Teams</li>
-            <li>Login</li>
+         {% for k, v in my_menus.items %}
+
+            <li {% if k == title %} class="active" {% endif %}>
+                <a  href="{{ v }}">{{ k }}</a>
+            </li>
+            {% endfor %}
         </ul>
 
         <p class="navbar-text navbar-right">
             <a href="#" class="navbar-link">
-                {% block user_name %}user{% endblock %}</a>
+                {% block user_name %}{% endblock %}</a>
         </p>
 
         </div>
