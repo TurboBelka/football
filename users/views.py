@@ -31,3 +31,9 @@ def register_user(request):
         return render(request, 'users/registration.html', context={
             'form': RegistrationForm()
         })
+
+
+class UsersView(generic.ListView):
+    template_name = 'users/index.html'
+    context_object_name = 'users_list'
+    model = Users

@@ -1,0 +1,16 @@
+{% extends 'base_template.html' %}
+{% block body_app %}
+    {% for user in users_list %}
+        {% if user.photo %}
+            <img src="/{{ user.photo }}"/>
+        {% else %}
+            {% load static %}
+            <img src="{% static 'image/default.png' %}"/>
+        {% endif %}
+        {{ user.user.username }}
+        {{ user.user.first_name }}
+        {{ user.user.last_name }}
+        {{ user.user.email }}
+        <br/>
+    {% endfor %}
+{% endblock %}
