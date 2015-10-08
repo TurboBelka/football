@@ -118,3 +118,14 @@ STATICFILES_DIRS = (
 
 LOGIN_REDIRECT_URL = '/index/loggedin/'
 REDIRECT_FIELD_NAME = '/index/logout/'
+
+
+AUTHETICATION_BACKENDS = (
+    'social_auth.backends.contrib.vkontakte.VKontakteOAuth2Backend',
+    'social_auth.backends.facebook.FacebookBackend',
+    'django.contrib.auth.backends.ModelBackend',
+)
+
+# settings params for auth VK
+VK_CLIENT_ID = 5098165
+VK_API_SECRET = 'i2khTK6ACi0sxw0Q30Ey'

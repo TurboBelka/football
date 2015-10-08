@@ -32,7 +32,12 @@
 
         <p class="navbar-text navbar-right">
             <a href="#" class="navbar-link">
-                {% block user_name %}{% endblock %}</a>
+                {% block user_name %}
+                {% if user.is_authenticated %}
+                    {{ user.username }}
+                {% endif %}
+                {% endblock %}
+            </a>
         </p>
 
         </div>

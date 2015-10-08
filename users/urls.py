@@ -11,4 +11,5 @@ urlpatterns = [
         kwargs={'next_page': '/index/'}),
     url(r'^loggedin', views.get_current_user),
     url(r'^registration', views.register_user, name='registration'),
+    url(r'^vk_login', views.vk_login, name='vk_login'),
 ]
