@@ -1,5 +1,14 @@
 {% extends 'base_template.html' %}
  {% block body_app %}
+<script>
+    (function(d, s, id) {
+        var js, fjs = d.getElementsByTagName(s)[0];
+        if (d.getElementById(id)) return;
+        js = d.createElement(s); js.id = id;
+        js.src = "//connect.facebook.net/en_US/sdk.js";
+        fjs.parentNode.insertBefore(js, fjs);
+    }(document, 'script', 'facebook-jssdk'));
+</script>
     <form method="post" action="">
         {% csrf_token %}
         {{ form.as_p }}
@@ -12,5 +21,9 @@
     {% load static %}
     <a href="https://oauth.vk.com/authorize?client_id=5098165&display=popup&redirect_uri=http://localhost:8000/index/vk_login&scope=photos,email&response_type=code&v=5.37">
         <img src="{% static 'image/vk_icon.png' %}" style="height: 30px; weidth: 30px;"  />
+    </a>
+    <a href="#" onclick="doLogin()">
+        <script src="{% static 'js/fb_login.js' %}"></script>
+        <img src="{% static 'image/fc_icon.jpeg' %}" style="height: 30px; weidth: 30px;" />
     </a>
 {% endblock %}
