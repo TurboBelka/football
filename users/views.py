@@ -1,7 +1,9 @@
 import json
+import io
+from tempfile import NamedTemporaryFile
+from django.core.files import File
 from django.shortcuts import render, redirect
 from django.views import generic
-import shutil
 from football.settings import VK_API_SECRET, VK_CLIENT_ID
 from .models import Users
 from django.http import HttpResponseRedirect
@@ -36,44 +38,52 @@ def vk_login(request):
     r = requests.get(url1, params1)
     params = json.loads(r.text)
     params = params['response']
-    path = '/static/user_photo/' \
-           # % d['email']
-    r = requests.get(params[0]['photo_50'])
-    with open(path, 'wb') as f:
-        r.raw.decode_content = True
-        shutil.copyfileobj(r.raw, f)
+    file_name = '%s.jpeg' % d['email']
 
-    if User.objects.filter(email=d['email']).exists():
-        user = User.objects.get(email=d['email'])
-        if not Users.objects.filter(user=user).exists():
-            user.last_name = params[0]['last_name']
-            user.first_name = params[0]['first_name']
-            user.save()
+    user, created = User.objects.get_or_create(
+        defaults={
+            'first_name': params[0]['first_name'],
+            'last_name': params[0]['last_name'],
+            'username': d['email'],
+        },
+        email=d['email'])
+    user.save()
 
-            Users.objects.create(user=user, photo=f)
-    else:
-        user = User.objects.create_user(username=d['email'],
-                                        email=d['email'],
-                                        password='qwerty',)
-        user.last_name = params[0]['last_name']
-        user.first_name = params[0]['first_name']
-        user.save()
-        Users.objects.create(user=user, photo=f)
+    my_user, created = Users.objects.get_or_create(
+        user=user)
+    if created:
+        f_tmp = NamedTemporaryFile()
+        f_tmp.write(requests.get(params[0]['photo_50']).content)
+        f_tmp.flush()
+        my_user.photo.save(file_name, File(f_tmp))
+        my_user.save()
+
+    # if User.objects.filter(email=d['email']).exists():
+    #     user = User.objects.get(email=d['email'])
+    #     if not Users.objects.filter(user=user).exists():
+    #         user.last_name = params[0]['last_name']
+    #         user.first_name = params[0]['first_name']
+    #         user.save()
+    #
+    #         new_user = Users.objects.create(user=user)
+    #         new_user.photo.save(file_name, File(f_tmp))
+    #
+    # else:
+    #     user = User.objects.create_user(username=d['email'],
+    #                                     email=d['email'],
+    #                                     password='qwerty',)
+    #     user.last_name = params[0]['last_name']
+    #     user.first_name = params[0]['first_name']
+    #     user.save()
+    #
+    #     new_user = Users.objects.create(user=user)
+    #     new_user.photo.save(file_name, File(f_tmp))
 
     # new_user = authenticate(username=user.username, password=user.password)
     user.backend = 'django.contrib.auth.backends.ModelBackend'
     user.save()
     login(request, user)
     return redirect('/index/loggedin/')
-
-# class UserRegistration(generic.FormView):
-#     template_name = 'users/registration.html'
-#     form_class = RegistrationForm
-#     success_url = '/index/'
-
-#     def form_valid(self, request):
-#         form = request.POST
-#         form.save()
 
 
 def register_user(request):
