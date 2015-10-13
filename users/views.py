@@ -1,16 +1,19 @@
 import json
-import io
 from tempfile import NamedTemporaryFile
 from django.core.files import File
+from django.core.urlresolvers import reverse_lazy
 from django.shortcuts import render, redirect
 from django.views import generic
 from football.settings import VK_API_SECRET, VK_CLIENT_ID
 from .models import Users
-from django.http import HttpResponseRedirect
-from .forms import RegistrationForm
+from django.http import HttpResponseRedirect, HttpResponse
+from .forms import RegistrationForm, ProfileForm
 import requests
 from django.contrib.auth.models import User
 from django.contrib.auth import login
+from django.contrib.auth.views import login as django_login
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.forms import PasswordChangeForm
 
 
 def get_current_user(request):
@@ -86,12 +89,42 @@ def vk_login(request):
     return redirect('/index/loggedin/')
 
 
+def fb_login(request):
+    user_info = json.loads(request.POST.get("user", ""))
+    file_name = '%s.jpeg' % user_info['email']
+
+    user, created = User.objects.get_or_create(
+        defaults={
+            'first_name': user_info['first_name'],
+            'last_name': user_info['last_name'],
+            'username': user_info['email'],
+        },
+        email=user_info['email'])
+    user.save()
+
+    my_user, created = Users.objects.get_or_create(
+        user=user)
+    picture = user_info['picture'].get('data')
+
+    if created:
+        f_tmp = NamedTemporaryFile()
+        f_tmp.write(requests.get(picture['url']).content)
+        f_tmp.flush()
+        my_user.photo.save(file_name, File(f_tmp))
+        my_user.save()
+
+    user.backend = 'django.contrib.auth.backends.ModelBackend'
+    user.save()
+    login(request, user)
+    return HttpResponse(reverse_lazy('index:loggedin'))
+
+
 def register_user(request):
     if request.POST:
         form = RegistrationForm(request.POST, request.FILES)
         if form.is_valid():
             form.save()
-            return HttpResponseRedirect('/index/')
+            return HttpResponse(reverse_lazy('index:index'))
         else:
             return render(request, 'users/registration.html', context={
                 'form': form})
@@ -99,6 +132,47 @@ def register_user(request):
         return render(request, 'users/registration.html', context={
             'form': RegistrationForm()
         })
+
+
+def block_login_page(request):
+    if request.user.is_authenticated():
+        return HttpResponseRedirect('/index/')
+    else:
+        return django_login(request, 'users/login.html')
+
+
+@login_required(login_url='/index/login/')
+def my_profile(request):
+    if request.method == 'POST':
+        my_form = ProfileForm(request.POST, request.FILES,
+                              instance=request.user)
+
+        if my_form.is_valid():
+            my_form.save()
+            return HttpResponseRedirect(reverse_lazy('index:index'))
+        else:
+            return render(request, 'users/my_profile.html', context={
+                'form': my_form
+            })
+    else:
+        return render(request, 'users/my_profile.html', context={
+            'form': ProfileForm(instance=request.user),
+            'change_pass': PasswordChangeForm(user=request.user)
+        })
+
+
+def change_pass(request):
+    if request.method == 'POST':
+        change_pass_form = PasswordChangeForm(user=request.user,
+                                              data=request.POST)
+        change_pass_form.fields['old_password'].attrs
+        if change_pass_form.is_valid():
+            change_pass_form.save()
+            return HttpResponseRedirect(reverse_lazy('index:my_profile'))
+        else:
+            return HttpResponse(json.dumps(change_pass_form.errors))
+    else:
+        return HttpResponse(status='400')
 
 
 class UsersView(generic.ListView):
