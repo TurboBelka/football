@@ -12,11 +12,10 @@ $(document).ready(function(){
                alert(error);
                },
             success: function(text){
-                $('.error').text(text);
                 for(var key in text){
-                    $('[name='+key+']').addClass('has-error')
+                    $('.help-block').text(text[key]);
+                    $('[name='+key+']').parent().addClass('has-error');
                 }
-
             }
         });
     });

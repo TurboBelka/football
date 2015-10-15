@@ -25,21 +25,30 @@
          {% for k, v in my_menus.items %}
 
             <li {% if k == title %} class="active" {% endif %}>
-                <a  href="{{ v }}">{{ k }}</a>
+                    {% if k == 'LogIn' %}
+                        <a href="{{ v }}?next={{ request.path }}">{{ k }}</a>
+                    {% else %}
+                        <a  href="{{ v }}">{{ k }}</a>
+                    {% endif %}
             </li>
             {% endfor %}
         </ul>
 
         <p class="navbar-text navbar-right">
-            <a href="#" class="navbar-link">
+
                 {% block user_name %}
                 {% if user.is_authenticated %}
-                    {{ user.username }}
+                    <a href="#" class="navbar-link">
+                        {{ user.username }}
+                    </a>
+                {% else %}
+                    <a href="#myLoginForm" class="btn btn-dafeault" role="button"
+                       data-toggle="modal">
+                            Login
+                    </a>
                 {% endif %}
                 {% endblock %}
-            </a>
         </p>
-
         </div>
     </div>
 </nav>
@@ -52,5 +61,28 @@
         {% now "Y" %}
     </footer>
 </div>
+
+<div class="modal fade" id="myLoginForm" tabindex="-1" role="dialog"
+     aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"
+                        aria-hidden="true">x</button>
+                <h4>Login</h4>
+            </div>
+            <form method="post" action="{% url 'index:login' %}?next={{request.path}}">
+                {% csrf_token %}
+                 <div class="modal-body">
+                    {{ form_for_login.as_p }}
+                 </div>
+                <div class="modal-footer">
+                    <input type="submit" value="Login"/>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 </body>
 </html>

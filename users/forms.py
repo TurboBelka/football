@@ -2,8 +2,18 @@ from PIL import Image
 from django.forms import ImageField
 from django.contrib.auth.models import User
 from .models import Users
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import UserCreationForm, PasswordChangeForm
 from django.forms import ModelForm
+
+
+class MyPasswordChangeForm(PasswordChangeForm):
+    def __init__(self, *args, **kwargs):
+        super(PasswordChangeForm, self).__init__(*args, **kwargs)
+        self.fields['old_password'].widget.attrs.update({'class' : 'form-control'})
+        for field in self.fields.itervalues():
+            field.widget.attrs.update({'class': 'form-control'})
+        print self.fields['old_password'].widget.attrs
+        # print dir(self.fields['old_password'].widget)
 
 
 class RegistrationForm(UserCreationForm):

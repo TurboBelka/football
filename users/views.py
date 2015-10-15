@@ -7,7 +7,7 @@ from django.views import generic
 from football.settings import VK_API_SECRET, VK_CLIENT_ID
 from .models import Users
 from django.http import HttpResponseRedirect, HttpResponse
-from .forms import RegistrationForm, ProfileForm
+from .forms import RegistrationForm, ProfileForm, MyPasswordChangeForm
 import requests
 from django.contrib.auth.models import User
 from django.contrib.auth import login
@@ -157,20 +157,21 @@ def my_profile(request):
     else:
         return render(request, 'users/my_profile.html', context={
             'form': ProfileForm(instance=request.user),
-            'change_pass': PasswordChangeForm(user=request.user)
+            'change_pass': MyPasswordChangeForm(user=request.user)
         })
 
 
 def change_pass(request):
     if request.method == 'POST':
-        change_pass_form = PasswordChangeForm(user=request.user,
-                                              data=request.POST)
-        change_pass_form.fields['old_password'].attrs
+        change_pass_form = MyPasswordChangeForm(user=request.user,
+                                                data=request.POST)
+
         if change_pass_form.is_valid():
             change_pass_form.save()
             return HttpResponseRedirect(reverse_lazy('index:my_profile'))
         else:
-            return HttpResponse(json.dumps(change_pass_form.errors))
+            return HttpResponse(json.dumps(change_pass_form.errors),
+                                content_type='application/json')
     else:
         return HttpResponse(status='400')
 

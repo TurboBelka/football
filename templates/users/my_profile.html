@@ -32,8 +32,11 @@
                 {% csrf_token %}
                 <div class="modal-body">
                     {% for field in change_pass %}
-                        {{ field.label_tag }}
-                        {{ field }}
+                    <div class="form-group">
+                            {{ field.label_tag }}
+                            {{ field }}
+                        <span class="help-block"></span>
+                    </div>
                     {% endfor %}
                 </div>
                 <div class="modal-footer">
