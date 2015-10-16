@@ -1,0 +1,29 @@
+{% extends 'base_template.html' %}
+{% block links %}
+        {% load static %}
+         <script src="{% static 'js/team_in_tour.js' %}"></script>
+{% endblock %}
+{% block body_app %}
+        <div class="dropdown">
+            <label>Choose tour</label>
+            <select id="my_select" class="form-control">
+                {% for tour in tours %}
+                    <option value="{{ tour.id }}" class="tour">
+                        {{ tour.name }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="teams">
+            <table id="teams" class="table table-hover">
+            </table>
+        </div>
+        {% if user.is_superuser %}
+        <a href="" class="btn btn-dafeault">
+            Generate
+        </a>
+        <a href="" class="btn btn-default">
+            Create Teams
+        </a>
+        {% endif %}
+{% endblock %}
