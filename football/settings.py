@@ -40,10 +40,9 @@ INSTALLED_APPS = (
     'users',
     'teams',
     'match',
-    'round',
-    'type_of_tour',
+    'round_in_game',
     'tournament',
-    'range',
+    'rang',
 )
 
 MIDDLEWARE_CLASSES = (

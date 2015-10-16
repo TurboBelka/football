@@ -9,11 +9,8 @@ from django.forms import ModelForm
 class MyPasswordChangeForm(PasswordChangeForm):
     def __init__(self, *args, **kwargs):
         super(PasswordChangeForm, self).__init__(*args, **kwargs)
-        self.fields['old_password'].widget.attrs.update({'class' : 'form-control'})
         for field in self.fields.itervalues():
             field.widget.attrs.update({'class': 'form-control'})
-        print self.fields['old_password'].widget.attrs
-        # print dir(self.fields['old_password'].widget)
 
 
 class RegistrationForm(UserCreationForm):

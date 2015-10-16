@@ -1,6 +1,6 @@
 from django.db import models
 from teams.models import Team
-from round.models import Round
+from round_in_game.models import RoundInGame
 
 
 # Create your models here.
@@ -11,4 +11,4 @@ class Match(models.Model):
                                     related_name='second_team')
     first_team_goals = models.SmallIntegerField()
     second_team_goals = models.SmallIntegerField()
-    round = models.ForeignKey(Round)
+    round = models.ForeignKey(RoundInGame)

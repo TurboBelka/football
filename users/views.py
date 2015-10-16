@@ -1,7 +1,9 @@
 import json
+import random
 from tempfile import NamedTemporaryFile
 from django.core.files import File
 from django.core.urlresolvers import reverse_lazy
+from django.db.models import Avg, Max
 from django.shortcuts import render, redirect
 from django.views import generic
 from football.settings import VK_API_SECRET, VK_CLIENT_ID
@@ -13,7 +15,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth import login
 from django.contrib.auth.views import login as django_login
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.forms import PasswordChangeForm
+from rang.models import Rang
 
 
 def get_current_user(request):
@@ -61,28 +63,6 @@ def vk_login(request):
         my_user.photo.save(file_name, File(f_tmp))
         my_user.save()
 
-    # if User.objects.filter(email=d['email']).exists():
-    #     user = User.objects.get(email=d['email'])
-    #     if not Users.objects.filter(user=user).exists():
-    #         user.last_name = params[0]['last_name']
-    #         user.first_name = params[0]['first_name']
-    #         user.save()
-    #
-    #         new_user = Users.objects.create(user=user)
-    #         new_user.photo.save(file_name, File(f_tmp))
-    #
-    # else:
-    #     user = User.objects.create_user(username=d['email'],
-    #                                     email=d['email'],
-    #                                     password='qwerty',)
-    #     user.last_name = params[0]['last_name']
-    #     user.first_name = params[0]['first_name']
-    #     user.save()
-    #
-    #     new_user = Users.objects.create(user=user)
-    #     new_user.photo.save(file_name, File(f_tmp))
-
-    # new_user = authenticate(username=user.username, password=user.password)
     user.backend = 'django.contrib.auth.backends.ModelBackend'
     user.save()
     login(request, user)
@@ -123,8 +103,20 @@ def register_user(request):
     if request.POST:
         form = RegistrationForm(request.POST, request.FILES)
         if form.is_valid():
-            form.save()
-            return HttpResponse(reverse_lazy('index:index'))
+            my_new_user = form.save()
+            if Rang.objects.count() == 0:
+                Rang.objects.create(rang=25, user=my_new_user)
+            else:
+                max_id = Rang.objects.values('user_id').annotate(Max('id'))
+                id_arr = []
+                for item in max_id:
+                    id_arr.append(item['id__max'])
+                res = Rang.objects.filter(id__in=id_arr).aggregate(Avg('rang'))
+                # rang_for_new_user = random.randint(0, round(res['rang__avg']))
+                Rang.objects.create(rang=round(res['rang__avg'])*0.7,
+                                    user=my_new_user)
+
+            return HttpResponseRedirect(reverse_lazy('index:index'))
         else:
             return render(request, 'users/registration.html', context={
                 'form': form})

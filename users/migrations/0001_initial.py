@@ -16,8 +16,7 @@ class Migration(migrations.Migration):
             name='Users',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('photo', models.CharField(max_length=200)),
-                ('rang', models.DecimalField(max_digits=2, decimal_places=2)),
+                ('photo', models.ImageField(upload_to=b'static/user_photo', blank=True)),
                 ('user', models.OneToOneField(to=settings.AUTH_USER_MODEL)),
             ],
         ),
