@@ -8,4 +8,4 @@ class Team(models.Model):
                                    related_name='first_user')
     second_user = models.ForeignKey(Users,
                                     related_name='second_user')
-    logo = models.ImageField()
+    logo = models.ImageField(blank=True, upload_to='static/teams_logo')

@@ -1,0 +1,49 @@
+-- SELECT users_users.id, range_range.rang, tournament_tournament.name as tour_name, tournament_tournament.date_end
+--  FROM (users_users join auth_user on 
+-- users_users.user_id=auth_user.id) join (range_range join
+-- tournament_tournament on range_range.tournament_id=tournament_tournament.id)
+--  on users_users.id=range_range.user_id
+-- GROUP BY users_users.id
+-- ORDER BY range_range.id DESC 
+--  
+-- 
+-- SELECT 
+--     rang_rang.id as rang_id,
+--     rang_rang.rang,
+--     tournament_tournament.name as tour_name,
+--     tournament_tournament.date_end as date_end,
+--     tournament_tournament.mode as mode_tour,
+--     users_users.id as user_id
+-- FROM
+--     (rang_rang
+--     join users_users ON users_users.id = rang_rang.user_id)
+--         join
+--     tournament_tournament ON rang_rang.tournament_id = tournament_tournament.id
+-- WHERE users_users.user_id=4
+-- ORDER BY date_end DESC limit 1
+-- 
+
+-- '9', '33.00', 'tour5', '2015-10-15', '1', '1'
+-- '10', '78.00', 'tour5', '2015-10-15', '1', '2'
+-- '11', '86.00', 'tour6', '2015-10-28', '2', '3'
+-- '3', '74.00', 'tour2', '2015-03-28', '1', '4'
+
+
+-- select 
+--     rang_rang.id, rang_rang.user_id, x.date_end
+-- from
+--     (select 
+--         rang_rang.user_id as user_id,
+--             max(tournament_tournament.date_end) as date_end
+--     from
+--         rang_rang
+--     join tournament_tournament ON rang_rang.tournament_id = tournament_tournament.id
+--     group by rang_rang.user_id) as x
+--         join
+--     rang_rang ON rang_rang.user_id = x.user_id
+
+
+select avg(rang) from rang_rang where id in (
+select max(id) from rang_rang
+group by user_id)
+

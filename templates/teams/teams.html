@@ -2,11 +2,37 @@
 {% block links %}
         {% load static %}
          <script src="{% static 'js/team_in_tour.js' %}"></script>
+ <script src="{% static 'js/jquery.tmpl.js' %}" type="text/javascript"></script>
+<script type="text/template" id="my_templ" >
+    <table class="table table-hover">
+        <tbody>
+        {% verbatim %}
+            {{each o}}
+                <tr>
+                    <td>${name}</td>
+                    <!--<td>${fields.logo}</td>-->
+                </tr>
+            {{/each}}
+        {% endverbatim %}
+        </tbody>
+    </table>
+</script>
+
+<script type="text/template" id="my_templ2" >
+    {% verbatim %}
+    {{each o}}
+    <div>
+        ${name}
+    </div>
+    {{/each}}
+    {% endverbatim %}
+</script>
 {% endblock %}
 {% block body_app %}
         <div class="dropdown">
             <label>Choose tour</label>
-            <select id="my_select" class="form-control">
+            <select id="my_select" class="form-control"
+                    data-url="{% url 'teams:team_in_tour' %}">
                 {% for tour in tours %}
                     <option value="{{ tour.id }}" class="tour">
                         {{ tour.name }}
@@ -14,12 +40,11 @@
                 {% endfor %}
             </select>
         </div>
-        <div class="teams">
-            <table id="teams" class="table table-hover">
-            </table>
+        <div id="teams">
+
         </div>
         {% if user.is_superuser %}
-        <a href="" class="btn btn-dafeault">
+        <a href="" class="btn btn-default">
             Generate
         </a>
         <a href="" class="btn btn-default">
