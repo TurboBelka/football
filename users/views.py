@@ -1,5 +1,4 @@
 import json
-import random
 from tempfile import NamedTemporaryFile
 from django.core.files import File
 from django.core.urlresolvers import reverse_lazy
