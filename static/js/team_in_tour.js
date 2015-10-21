@@ -1,14 +1,17 @@
 $(document).ready(function(){
     $("#my_select").change(function(){
-    var tour_id = {'my_select': $(this).val()};
+    var url = $('option:selected', this).data('create_url');
+    var url1 = $('option:selected', this).data('url');
+    var url_gen = $('option:selected', this).data('url_gen');
         $.ajax({
-            url: $(this).data('url'),
+            url: url1,
             method: 'get',
-            data: tour_id,
             success: function(obj){
                 var tmp = $.templates('#my_templ');
                 var htmlOutput = tmp.render(obj);
                 $('#teams').html(htmlOutput);
+                $('#create_team').attr("href", url);
+                $('#generate_team').attr("href", url_gen);
             },
             error: function(xhr, status, error){
                alert(error);

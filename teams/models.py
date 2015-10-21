@@ -1,5 +1,6 @@
 from django.db import models
 from users.models import Users
+from tournament.models import Tournament
 
 
 class Team(models.Model):
@@ -9,3 +10,4 @@ class Team(models.Model):
     second_user = models.ForeignKey(Users,
                                     related_name='second_user')
     logo = models.ImageField(blank=True, upload_to='static/teams_logo')
+    tour = models.ManyToManyField(Tournament)

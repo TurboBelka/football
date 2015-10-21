@@ -6,7 +6,12 @@
 {% block body_app %}
     <form method="post" enctype="multipart/form-data">
     {% csrf_token %}
-        <img src="/{{ user.users.photo }}" />
+        {% if user.users.photo %}
+            <img src="/{{ user.users.photo }}" />
+        {% else %}
+            {% load static %}
+            <img src="{% static 'image/default.png' %}"/>
+        {% endif %}
         {{ form.as_p }}
         <!--<a href="#myModal" class="btn btn-default">-->
             <!--Change Password-->

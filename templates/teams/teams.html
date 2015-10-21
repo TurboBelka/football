@@ -10,7 +10,11 @@
             {{:name}}
         </td>
         <td>
+        {{if logo}}
             <img src="/{{:logo}}" />
+        {{else}}
+            <img src="/static/teams_logo/your-logo-here.png" />
+        {{/if}}
         </td>
     </tr>
     {% endverbatim %}
@@ -20,10 +24,12 @@
 {% block body_app %}
         <div class="dropdown">
             <label>Choose tour</label>
-            <select id="my_select" class="form-control"
-                    data-url="{% url 'teams:team_in_tour' %}">
+            <select id="my_select" class="form-control">
                 {% for tour in tours %}
-                    <option value="{{ tour.id }}" class="tour">
+                    <option value="{{ tour.id }}" class="tour"
+                            data-create_url="{% url 'teams:create_team' tour.id %}"
+                            data-url="{% url 'teams:team_in_tour' tour.id %}"
+                            data-url_gen="{% url 'teams:generate_teams' tour.id %}">
                         {{ tour.name }}
                     </option>
                 {% endfor %}
@@ -36,10 +42,10 @@
             </table>
         </div>
         {% if user.is_superuser %}
-        <a href="{% url 'teams:generate_teams' %}" class="btn btn-default">
+        <a id="generate_team" href="" class="btn btn-default">
             Generate Teams
         </a>
-        <a href="{% url 'teams:create_team' %}" class="btn btn-default">
+        <a id="create_team" href="" class="btn btn-default">
             Create Teams
         </a>
         {% endif %}

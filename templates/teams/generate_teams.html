@@ -1,0 +1,41 @@
+{% extends 'base_template.html' %}
+{% block links %}
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style_gener.css' %}"/>
+    <script src="{% static 'js/choos_user_in_team.js' %}"></script>
+{% endblock %}
+{% block body_app %}
+    <div class="container">
+        <div class="row">
+            <div id="all_user" class="col-md-4">
+                <ul class="list-group">
+                    {% for user in all_user %}
+                        <li class="list-group-item" onclick="func()">
+                            {{ user.first_name }}
+                            {{ user.last_name }}
+                            ({{ user.rang }})
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <div class="buttons col-md-4">
+                <div>
+                    <button id="add_user">
+                        <span class="glyphicon glyphicon-arrow-right"></span>
+                    </button>
+                    <button id="delete_user">
+                        <span class="glyphicon glyphicon-arrow-left"></span>
+                    </button>
+                </div>
+            </div>
+            <div id="selected_user" class="col-md-4">
+                <ul class="list_group">
+
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="sub_button text-center">
+        <a href="" class="btn btn-default">Generate</a>
+    </div>
+{% endblock %}

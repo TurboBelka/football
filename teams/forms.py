@@ -6,12 +6,11 @@ from teams.models import Team
 class CreateTeamForm(ModelForm):
     class Meta:
         model = Team
-        fields = ['first_user', 'second_user', 'name', 'logo']
+        fields = ['first_user', 'second_user', 'logo']
 
     def save(self, commit=True):
         new_team = Team(first_user=self.cleaned_data['first_user'],
-                        second_user=self.cleaned_data['second_user'],
-                        name=self.cleaned_data['name'])
+                        second_user=self.cleaned_data['second_user'])
         if self.cleaned_data['logo']:
             new_team.logo = self.cleaned_data['logo']
             image = Image.open(new_team.logo)

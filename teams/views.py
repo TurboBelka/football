@@ -1,10 +1,9 @@
 import json
-from django.contrib.auth.decorators import login_required, user_passes_test
-from django.contrib.auth.models import User
+from django.contrib.auth.decorators import user_passes_test
 from django.core.urlresolvers import reverse_lazy
 from django.db.models import Q, Max
 from django.db.models.fields.files import ImageFieldFile
-from django.forms import model_to_dict, modelformset_factory
+from django.forms import modelformset_factory
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.views import generic
@@ -12,8 +11,7 @@ from rang.models import Rang
 from teams.forms import CreateTeamForm
 from tournament.models import Tournament
 from teams.models import Team
-from match.models import Match
-from users.models import Users
+from django.contrib.auth.models import User
 
 
 class GetAllTourView(generic.ListView):
@@ -24,30 +22,18 @@ class GetAllTourView(generic.ListView):
 
 def serialize_image_field(obj):
     if isinstance(obj, ImageFieldFile):
-        return obj.url
+        if obj:
+            return obj.url
+        else:
+            return ""
 
 
-def get_team_in_tour(request):
+def get_team_in_tour(request, pk):
     if request.method == 'GET':
-        tour_id = request.GET['my_select']
+        teams_in_tour = Team.objects.filter(tour__id=pk).values('id', 'logo',
+                                                                'name')
 
-        first_teams_id = Match.objects.filter(
-            round__tournament_id=tour_id).values_list('first_team_id',
-                                                      flat=True)
-        second_teams_id = Match.objects.filter(
-            round__tournament_id=tour_id).values_list('second_team_id',
-                                                      flat=True)
-        teams_in_tour = Team.objects.filter(Q(id__in=first_teams_id) |
-                                            Q(id__in=second_teams_id))
-        teams = []
-        for team in teams_in_tour:
-            if team.logo == "":
-                team.logo = "static/teams_logo/your-logo-here.png"
-
-            teams.append(model_to_dict(team,
-                                       fields=['model', 'pk', 'logo',
-                                               'name']))
-        teams = json.dumps(teams, default=serialize_image_field)
+        teams = json.dumps(list(teams_in_tour), default=serialize_image_field)
         return HttpResponse(teams,
                             content_type='application/json')
     else:
@@ -55,14 +41,33 @@ def get_team_in_tour(request):
 
 
 @user_passes_test(lambda u: u.is_superuser)
-def create_team(request):
+def create_team(request, pk):
     form_set_cls = modelformset_factory(Team, form=CreateTeamForm, extra=2,
                                         max_num=2)
+    t = Tournament.objects.get(pk=pk)
     if request.POST:
         if request.user.is_superuser:
             form_set = form_set_cls(request.POST, request.FILES)
             if form_set.is_valid():
-                form_set.save()
+                new_teams = form_set.save(commit=False)
+                for team in new_teams:
+                    if not Team.objects.filter(Q(first_user=team.first_user,
+                                                 second_user=team.second_user) |
+                                                Q(first_user=team.second_user,
+                                                  second_user=team.first_user)).exists():
+                        fu_name = User.objects.get(users=team.first_user)
+                        su_name = User.objects.get(users=team.second_user)
+
+                        gen_name = '%s %s. + %s %s.' % (fu_name.first_name,
+                                                        fu_name.last_name[:1],
+                                                        su_name.first_name,
+                                                        su_name.last_name[:1])
+
+                        team.name = gen_name
+                        team.save()
+
+                        t.team_set.add(team)
+                        t.save()
                 return HttpResponseRedirect(reverse_lazy('teams:teams'))
             else:
                 return render(request, 'teams/create_team.html', context={
@@ -73,9 +78,21 @@ def create_team(request):
             'form_set': form_set})
 
 
-def generate_teams(request):
-    # all_users = Users.objects.values_list('id', 'username')
-    all_users = Rang.objects.value('user_id').annotate(Max('id'))
-
+def generate_teams(request, pk):
+    last_rang = Rang.objects.values('user').annotate(Max('id'))
+    arr = []
+    for item in last_rang:
+        arr.append(item['id__max'])
+    users_last_rang = Rang.objects.filter(id__in=arr)
+    users_info = []
+    for item in users_last_rang:
+        user = {
+            'user_id': item.user.id,
+            'first_name': item.user.user.first_name,
+            'last_name': item.user.user.last_name,
+            'rang': item.rang
+        }
+        users_info.append(user)
+    print users_info
     return render(request, 'teams/generate_teams.html', context={
-        'all_user': all_users})
+        'all_user': users_info})
