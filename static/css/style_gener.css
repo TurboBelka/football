@@ -1,11 +1,7 @@
-div#all_user{
-    width: 30%;
+.hover-light{
+    background-color: #DCDCDC;
 }
 
-div.buttons{
-    width: 10%;
-}
-
-.sub_button{
-    align: center;
+.choose-user{
+    background-color: #C0C0C0;
 }

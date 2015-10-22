@@ -51,19 +51,9 @@ def create_team(request, pk):
             if form_set.is_valid():
                 new_teams = form_set.save(commit=False)
                 for team in new_teams:
-                    if not Team.objects.filter(Q(first_user=team.first_user,
-                                                 second_user=team.second_user) |
-                                                Q(first_user=team.second_user,
-                                                  second_user=team.first_user)).exists():
-                        fu_name = User.objects.get(users=team.first_user)
-                        su_name = User.objects.get(users=team.second_user)
-
-                        gen_name = '%s %s. + %s %s.' % (fu_name.first_name,
-                                                        fu_name.last_name[:1],
-                                                        su_name.first_name,
-                                                        su_name.last_name[:1])
-
-                        team.name = gen_name
+                    l = check_team_exist(team.first_user, team.second_user)
+                    if l[0]:
+                        team.name = l[1]
                         team.save()
 
                         t.team_set.add(team)
@@ -93,6 +83,55 @@ def generate_teams(request, pk):
             'rang': item.rang
         }
         users_info.append(user)
-    print users_info
     return render(request, 'teams/generate_teams.html', context={
-        'all_user': users_info})
+        'all_users': users_info,
+        'tour_id': pk})
+
+
+def check_team_exist(first_user, second_user):
+    if Team.objects.filter(Q(first_user=first_user,
+                                                 second_user=second_user) |
+                                                       Q(
+                                                           first_user=second_user,
+                                                           second_user=first_user)).exists():
+
+        return False
+    else:
+        fu_name = User.objects.get(users=first_user)
+        su_name = User.objects.get(users=second_user)
+        gen_name = '%s %s. + %s %s.' % (fu_name.first_name,
+                                                        fu_name.last_name[:1],
+                                                        su_name.first_name,
+                                                        su_name.last_name[:1])
+        return True, gen_name
+
+
+def generation_teams(request, pk):
+    if request.POST:
+        selected_users = json.loads(request.POST.get('users_id'))
+        last_rang = Rang.objects.filter(user_id__in=selected_users).values(
+            'user').annotate(Max('id')).values_list(
+            'id__max', flat=True)
+        players = Rang.objects.filter(id__in=last_rang).values_list(
+            'user_id').order_by('-rang')
+
+        if len(players) % 2 == 0:
+            i = 0
+            counts = len(players)
+            while i < (counts / 2):
+                    first_user = User.objects.get(users=players[i])
+                    second_user = User.objects.get(users=players[counts-1-i])
+                    l = check_team_exist(first_user, second_user)
+                    if l[0]:
+                        new_team = Team.objects.create(name=l[1], first_user=first_user,
+                                                       second_user=second_user,
+                                                       logo="", tour_id=pk)
+                    i += 1
+                    # new_team = Team.objects.create()
+        else:
+            return HttpResponse(status='400')
+
+        return HttpResponse(reverse_lazy('teams:teams'))
+    else:
+        print 'this is get'
+        return HttpResponseRedirect(reverse_lazy('teams:teams'))
