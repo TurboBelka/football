@@ -1,6 +1,7 @@
 from PIL import Image
 from django.forms import ModelForm
 from teams.models import Team
+from tournament.models import Tournament
 
 
 class CreateTeamForm(ModelForm):
@@ -20,3 +21,9 @@ class CreateTeamForm(ModelForm):
         if commit:
             new_team.save()
         return new_team
+
+
+class CreateTourForm(ModelForm):
+    class Meta:
+        model = Tournament
+        fields = ['name', 'mode', 'type_tour', 'date_start', 'date_end']

@@ -24,12 +24,14 @@
 {% block body_app %}
         <div class="dropdown">
             <label>Choose tour</label>
-            <select id="my_select" class="form-control">
+            <select id="my_select" class="form-control" data-tour_id="{{ tour_id }}">
                 {% for tour in tours %}
+
                     <option value="{{ tour.id }}" class="tour"
                             data-create_url="{% url 'teams:create_team' tour.id %}"
                             data-url="{% url 'teams:team_in_tour' tour.id %}"
-                            data-url_gen="{% url 'teams:generate_teams' tour.id %}">
+                            data-url_gen="{% url 'teams:generate_teams' tour.id %}"
+                            data-tour_mode="{{ tour.mode }}">
                         {{ tour.name }}
                     </option>
                 {% endfor %}
@@ -42,11 +44,14 @@
             </table>
         </div>
         {% if user.is_superuser %}
-        <a id="generate_team" href="" class="btn btn-default">
-            Generate Teams
-        </a>
-        <a id="create_team" href="" class="btn btn-default">
-            Create Teams
-        </a>
+            <a id="generate_team" href="" class="btn btn-default">
+                Generate Teams
+            </a>
+            <a id="create_team" href="" class="btn btn-default">
+                Create Teams
+            </a>
+            <a id="create_tour" href="" class="btn btn-default">
+                Create Tour
+            </a>
         {% endif %}
 {% endblock %}

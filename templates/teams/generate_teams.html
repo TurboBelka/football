@@ -37,7 +37,8 @@
     </div>
     <div class="submit_button text-center">
         <a href="" class="btn btn-default" id="res_but"
-           data-url="{% url 'teams:generation' tour_id %}">
+           data-url="{% url 'teams:generation' tour_id %}"
+           data-tour_id="{{ tour_id }}">
             Generate
         </a>
     </div>

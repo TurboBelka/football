@@ -28,24 +28,11 @@ $(document).ready(function(){
             arr.push($(this).data('user_id'));
          });
 
-        /*$.ajax({
-            url: url,
-            method: 'post',
-            data: {
-             'users_id': JSON.stringify(arr),
-             'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val()
-            },
-            success: function(response){
-//                window.location.replace(response);
-            },
-            error: function(){
-                alert("you must select an even number of players");
-            }
-        });*/
         data =  {
              'users_id': JSON.stringify(arr),
              'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val()
             };
-        $.post(url, data).fail(function(){alert(0);}).done(function(){alert(1);});
+        $.post(url, data, function(response){
+            window.location.replace(response);}).fail(function(){alert(0);});
     });
 });
