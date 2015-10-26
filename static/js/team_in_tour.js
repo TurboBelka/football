@@ -5,7 +5,6 @@ $(document).ready(function(){
         var url1 = $('option:selected', this).data('url');
         var url_gen = $('option:selected', this).data('url_gen');
         var mode = $('option:selected', this).data('tour_mode');
-        console.log(mode);
         if (mode == 1){
             $('#create_team').attr("disabled", true);
             $('#generate_team').attr("disabled", true);
@@ -30,6 +29,12 @@ $(document).ready(function(){
             }
         });
     });
-    $("#my_select").val($(this).data('tour_id'));
-    $("#my_select").change();
+    var select = $("#my_select");
+    select.val(select.data('tour_id'));
+    if (select.data('tour_id')){
+        select.val(select.data('tour_id'));
+    }else{
+        select.val(1);
+    }
+    select.change();
 });

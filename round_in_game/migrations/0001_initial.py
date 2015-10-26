@@ -15,6 +15,7 @@ class Migration(migrations.Migration):
             name='RoundInGame',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('type_rang', models.SmallIntegerField(choices=[(1, b'1/8'), (2, b'1/4'), (3, b'1/2'), (4, b'final'), (5, b'third_place'), (6, b'regular')])),
                 ('tournament', models.ForeignKey(to='tournament.Tournament')),
             ],
         ),

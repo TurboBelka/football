@@ -33,6 +33,8 @@ $(document).ready(function(){
              'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val()
             };
         $.post(url, data, function(response){
-            window.location.replace(response);}).fail(function(){alert(0);});
+            window.location.replace(response);}).fail(function(){
+                $('#errorModal').modal();
+            });
     });
 });

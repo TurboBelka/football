@@ -17,7 +17,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('rang', models.DecimalField(default=25, max_digits=5, decimal_places=2)),
-                ('tournament', models.ForeignKey(to='tournament.Tournament', blank=True)),
+                ('tournament', models.ForeignKey(to='tournament.Tournament', null=True)),
                 ('user', models.ForeignKey(to='users.Users')),
             ],
         ),

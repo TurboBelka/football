@@ -18,7 +18,6 @@ class Migration(migrations.Migration):
                 ('name', models.CharField(max_length=200)),
                 ('date_start', models.DateField()),
                 ('date_end', models.DateField()),
-                ('type_tour', models.SmallIntegerField(choices=[(1, b'1/8'), (2, b'1/4'), (3, b'1/2'), (4, b'final'), (5, b'third_place'), (6, b'regular')])),
             ],
         ),
     ]
