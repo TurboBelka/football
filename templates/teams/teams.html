@@ -31,6 +31,7 @@
                             data-create_url="{% url 'teams:create_team' tour.id %}"
                             data-url="{% url 'teams:team_in_tour' tour.id %}"
                             data-url_gen="{% url 'teams:generate_teams' tour.id %}"
+                            data-url_edit_tour="{% url 'tour:edit' tour.id %}"
                             data-tour_mode="{{ tour.mode }}">
                         {{ tour.name }}
                     </option>
@@ -52,6 +53,9 @@
             </a>
             <a id="create_tour" href="{% url 'tour:tour' %}" class="btn btn-default">
                 Create Tour
+            </a>
+            <a id="edit_tour" href="" class="btn btn-default">
+                Edit Tour
             </a>
         {% endif %}
 {% endblock %}

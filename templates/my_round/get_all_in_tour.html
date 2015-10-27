@@ -1,0 +1,28 @@
+{% extends 'base_template.html' %}
+{% block links %}
+    {% load static %}
+    <script src="{% static 'js/all_round_in_tour.js' %}"></script>
+{% endblock %}
+{% block body_app %}
+    <div class="dropdown">
+        <label>Choose tour</label>
+        <select id="tour_select" class="form-control" data-tour_id="{{ tour_id }}"
+                data-url="{% url 'round:round'  %}">
+            {% for tour in tours %}
+                <option value="{{ tour.id }}">
+                    {{ tour.name }}
+                </option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="dropdown">
+        <label>Choose round in this tour</label>
+        <select id="round_select" class="form-control">
+            <!--{% for round in rounds %}-->
+                <!--<option value="{{ round.id }}">-->
+                    <!--{{ round.name }}-->
+                <!--</option>-->
+            <!--{% endfor %}-->
+        </select>
+    </div>
+{% endblock %}

@@ -4,7 +4,9 @@ $(document).ready(function(){
         var url = $('option:selected', this).data('create_url');
         var url1 = $('option:selected', this).data('url');
         var url_gen = $('option:selected', this).data('url_gen');
+        var url_edit = $('option:selected', this).data('url_edit_tour');
         var mode = $('option:selected', this).data('tour_mode');
+        $('#edit_tour').attr("href", url_edit);
         if (mode == 1){
             $('#create_team').attr("disabled", true);
             $('#generate_team').attr("disabled", true);

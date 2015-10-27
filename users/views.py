@@ -62,6 +62,8 @@ def vk_login(request):
         my_user.photo.save(file_name, File(f_tmp))
         my_user.save()
 
+    set_rang(my_user)
+
     user.backend = 'django.contrib.auth.backends.ModelBackend'
     user.save()
     login(request, user)
@@ -92,10 +94,26 @@ def fb_login(request):
         my_user.photo.save(file_name, File(f_tmp))
         my_user.save()
 
+    set_rang(my_user)
+
     user.backend = 'django.contrib.auth.backends.ModelBackend'
     user.save()
     login(request, user)
     return HttpResponse(reverse_lazy('index:loggedin'))
+
+
+def set_rang(user):
+    if Rang.objects.count() == 0:
+        Rang.objects.create(rang=25, user=user)
+    else:
+        max_id = Rang.objects.values('user_id').annotate(Max('id'))
+        id_arr = []
+        for item in max_id:
+            id_arr.append(item['id__max'])
+        res = Rang.objects.filter(id__in=id_arr).aggregate(Avg('rang'))
+        # rang_for_new_user = random.randint(0, my_round(res['rang__avg']))
+        Rang.objects.create(rang=round(res['rang__avg'])*0.7,
+                            user=user)
 
 
 def register_user(request):
@@ -103,17 +121,7 @@ def register_user(request):
         form = RegistrationForm(request.POST, request.FILES)
         if form.is_valid():
             my_new_user = form.save()
-            if Rang.objects.count() == 0:
-                Rang.objects.create(rang=25, user=my_new_user)
-            else:
-                max_id = Rang.objects.values('user_id').annotate(Max('id'))
-                id_arr = []
-                for item in max_id:
-                    id_arr.append(item['id__max'])
-                res = Rang.objects.filter(id__in=id_arr).aggregate(Avg('rang'))
-                # rang_for_new_user = random.randint(0, round(res['rang__avg']))
-                Rang.objects.create(rang=round(res['rang__avg'])*0.7,
-                                    user=my_new_user)
+            set_rang(my_new_user)
 
             return HttpResponseRedirect(reverse_lazy('index:index'))
         else:

@@ -21,4 +21,5 @@ urlpatterns = [
     url(r'^index/', include('users.urls', namespace="index")),
     url(r'^teams/', include('teams.urls', namespace="teams")),
     url(r'^tour/', include('tournament.urls', namespace="tour")),
+    url(r'^round/', include('round_in_game.urls', namespace="round")),
 ]

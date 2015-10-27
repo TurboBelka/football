@@ -26,12 +26,13 @@ class RegistrationForm(UserCreationForm):
         new_user = Users(user=user)
         if self.cleaned_data['photo']:
             new_user.photo = self.cleaned_data['photo']
+            if commit:
+                new_user.save()
             image = Image.open(new_user.photo)
             size = (50, 50)
             image = image.resize(size, Image.ANTIALIAS)
             image.save(new_user.photo)
-        if commit:
-            new_user.save()
+
 
         return new_user
 

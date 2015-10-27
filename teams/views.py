@@ -1,5 +1,6 @@
 import json
 import random
+from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import user_passes_test
 from django.core.urlresolvers import reverse_lazy
 from django.db.models import Q, Max
@@ -48,7 +49,7 @@ def get_team_in_tour(request, pk):
         return HttpResponse(status='400')
 
 
-@user_passes_test(lambda u: u.is_superuser)
+@staff_member_required
 def create_team(request, pk):
     form_set_cls = modelformset_factory(Team, form=CreateTeamForm, extra=2,
                                         max_num=2)
@@ -128,9 +129,9 @@ def check_team_exist(first_user, second_user):
 
 def check_user_in_tour(first_user, second_user, tour):
     fuser = Team.objects.filter(Q(first_user=first_user) | Q(second_user=first_user),
-                                tour=tour).exist()
+                                tour=tour).exists()
     suser = Team.objects.filter(Q(first_user=second_user) | Q(second_user=second_user),
-                                tour=tour).exist()
+                                tour=tour).exists()
     if fuser | suser:
         return False
     else:
