@@ -1,0 +1,11 @@
+li:hover{
+    background-color: #DCDCDC;
+}
+
+#tours > li.choosed{
+    background-color: #C0C0C0;
+}
+
+#content{
+    border-left: 1px solid #4285F4;
+}

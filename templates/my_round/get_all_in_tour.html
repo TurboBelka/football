@@ -1,28 +1,40 @@
 {% extends 'base_template.html' %}
 {% block links %}
     {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style_round.css' %}"/>
+{% load js %}
+    {% django_js %}
     <script src="{% static 'js/all_round_in_tour.js' %}"></script>
 {% endblock %}
 {% block body_app %}
-    <div class="dropdown">
-        <label>Choose tour</label>
-        <select id="tour_select" class="form-control" data-tour_id="{{ tour_id }}"
-                data-url="{% url 'round:round'  %}">
+    <div id="my_menu" class="col-sm-4 col-md-4">
+        <ul id="tours" class="nav nav-pills nav-stacked">
             {% for tour in tours %}
-                <option value="{{ tour.id }}">
+            <li data-tour_id="{{ tour.id }}"
+                data-tour_mode="{{ tour.mode }}"
+                data-url="{% url 'round:get_round_in_tour' tour.id %}">
+                <div>
                     {{ tour.name }}
-                </option>
+                </div>
+                <div>
+                    {{ tour.date_start }}
+                    {{ tour.date_end }}
+                </div>
+            </li>
             {% endfor %}
-        </select>
+        </ul>
     </div>
-    <div class="dropdown">
-        <label>Choose round in this tour</label>
-        <select id="round_select" class="form-control">
-            <!--{% for round in rounds %}-->
-                <!--<option value="{{ round.id }}">-->
-                    <!--{{ round.name }}-->
-                <!--</option>-->
-            <!--{% endfor %}-->
-        </select>
+    <div id="content"  class="col-sm-8 col-md-8">
+        <div class="dropdown">
+            <label>Choose round</label>
+            <select id="round_in_tour" class="form-control">
+            </select>
+        </div>
+        <div>
+            <label>Team in choosed round</label>
+            <ul id="teams_in_round" class="list-group">
+
+            </ul>
+        </div>
     </div>
 {% endblock %}

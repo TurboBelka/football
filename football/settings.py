@@ -37,12 +37,15 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
     'users',
     'teams',
     'match',
     'round_in_game',
     'tournament',
     'rang',
+
+    'djangojs',
 )
 
 MIDDLEWARE_CLASSES = (

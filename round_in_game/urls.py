@@ -2,5 +2,7 @@ from django.conf.urls import url
 from round_in_game import views
 
 urlpatterns = [
-    url(r'^$', views.get_all_in_tour, name='round'),
+    url(r'^$', views.ChooseTourView.as_view(), name='choose_tour'),
+    url(r'^(?P<pk>[0-9]+)/$', views.get_all_in_tour, name='get_round_in_tour'),
+    url(r'^(?P<pk>[0-9]+)/teams/$', views.get_teams, name='get_teams'),
 ]
