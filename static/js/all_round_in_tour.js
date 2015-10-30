@@ -33,7 +33,8 @@ $(document).ready(function() {
     $('#round_in_tour').change(function(){
         var url = $('option:selected').data('url');
         round_selected = $('option:selected').data('round_id');
-        console.log(url);
+        var url_image = Urls['match:match'](round_selected);
+        $('#look_image').attr('href', url_image);
         $.ajax({
             url: url,
             method: 'get',
