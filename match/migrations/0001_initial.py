@@ -19,7 +19,7 @@ class Migration(migrations.Migration):
                 ('first_team_goals', models.SmallIntegerField()),
                 ('second_team_goals', models.SmallIntegerField()),
                 ('first_team', models.ForeignKey(related_name='first_team', to='teams.Team')),
-                ('round', models.ForeignKey(to='round_in_game.RoundInGame')),
+                ('my_round', models.ForeignKey(to='round_in_game.RoundInGame')),
                 ('second_team', models.ForeignKey(related_name='second_team', to='teams.Team')),
             ],
         ),

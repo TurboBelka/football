@@ -1,13 +1,13 @@
 $(document).ready(function() {
-    $('input[name=date_start]').datepicker({
+    $('#my_form input[name=date_start]').datepicker({
         format: 'yyyy-mm-dd',
         orientation: "bottom right"
         });
-    $('input[name=date_end]').datepicker({
+    $('#my_form input[name=date_end]').datepicker({
         format: 'yyyy-mm-dd',
         orientation: "bottom right"
         });
-    $('my_form').submit(function(eventObj){
+    $('#my_form').submit(function(eventObj){
         eventObj.preventDefault();
         var date_start = new Date($('input[name=date_start]').val());
         var date_end = new Date($('input[name=date_end]').val());
@@ -27,7 +27,5 @@ $(document).ready(function() {
 
             });
         }
-
-
     });
 });

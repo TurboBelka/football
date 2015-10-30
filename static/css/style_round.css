@@ -9,3 +9,7 @@ li:hover{
 #content{
     border-left: 1px solid #4285F4;
 }
+
+#all_teams > li.choosed{
+    background-color: #C0C0C0;
+}

@@ -18,9 +18,11 @@ from django.contrib import admin
 
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
-    url(r'^djangojs/', include('djangojs.urls')),
+    # url(r'^djangojs/', include('djangojs.urls')),
+    url(r'^jsreverse/$', 'django_js_reverse.views.urls_js', name='js_reverse'),
     url(r'^index/', include('users.urls', namespace="index")),
     url(r'^teams/', include('teams.urls', namespace="teams")),
     url(r'^tour/', include('tournament.urls', namespace="tour")),
     url(r'^round/', include('round_in_game.urls', namespace="round")),
+    url(r'^match/', include('match.urls', namespace="match")),
 ]

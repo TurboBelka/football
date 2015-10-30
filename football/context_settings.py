@@ -20,5 +20,6 @@ def get_names(request):
         my_menus['My profile'] = reverse_lazy('index:my_profile')
         my_menus['Tours'] = reverse_lazy('teams:teams')
         my_menus['Round'] = reverse_lazy('round:choose_tour')
+        my_menus['Match'] = reverse_lazy('match:choose_round')
         my_menus['LogOut'] = reverse_lazy('index:logout')
         return {'my_menus': my_menus}

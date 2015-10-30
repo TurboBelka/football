@@ -45,7 +45,7 @@ INSTALLED_APPS = (
     'tournament',
     'rang',
 
-    'djangojs',
+    'django_js_reverse',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -112,7 +112,7 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
-
+STATIC_ROOT = '/home/user/table_soccer/football/static_root'
 STATIC_URL = '/static/'
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, "static"),
@@ -127,6 +127,8 @@ AUTHETICATION_BACKENDS = (
     'social_auth.backends.facebook.FacebookBackend',
     'django.contrib.auth.backends.ModelBackend',
 )
+
+JS_REVERSE_JS_VAR_NAME = 'Urls'
 
 # settings params for auth VK
 VK_CLIENT_ID = 5098165

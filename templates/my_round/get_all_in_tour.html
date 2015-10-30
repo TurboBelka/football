@@ -2,9 +2,9 @@
 {% block links %}
     {% load static %}
     <link rel="stylesheet" href="{% static 'css/style_round.css' %}"/>
-{% load js %}
-    {% django_js %}
     <script src="{% static 'js/all_round_in_tour.js' %}"></script>
+    <script src="{% static 'django_js_reverse/js/reverse.js' %}"></script>
+    <script src="{% url 'js_reverse' %}" type="text/javascript"></script>
 {% endblock %}
 {% block body_app %}
     <div id="my_menu" class="col-sm-4 col-md-4">
@@ -31,10 +31,52 @@
             </select>
         </div>
         <div>
-            <label>Team in choosed round</label>
-            <ul id="teams_in_round" class="list-group">
+            <label>Teams in choosed round</label>
+            <ul id="teams_in_round" class="list-group"></ul>
+        </div>
+        <div>
+            <a id="gen_matchs" class="btn btn-default">
+                Generate matchs
+            </a>
+        </div>
+    </div>
 
-            </ul>
+    <div id="modalAddTeam" class="modal fade" role="dialog">
+        {% csrf_token %}
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">x</button>
+                    <h4>Choose teams to add in this round</h4>
+                </div>
+                <div class="modal-body">
+                    <ul id="all_teams" class="list-group"></ul>
+                    <div id="countMatch">
+                        <label>Choose count of match:</label>
+                        <input type="number" id="count_match" min="1" max="5" />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <a id="add_choosed" href="" class="btn btn-default">
+                        Generate
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="errorModal" role="dialog">
+        <div class="modal-dialog ">
+            <div class="modal-content alert alert-danger">
+
+                    <button type="button" class="close" data-dismiss="modal">
+                        x
+                    </button>
+                    <h5>
+                        <strong>ERROR!</strong>
+                        You must to choose teams for generation
+                    </h5>
+            </div>
         </div>
     </div>
 {% endblock %}
