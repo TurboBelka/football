@@ -7,11 +7,14 @@
     <script src="{% url 'js_reverse' %}" type="text/javascript"></script>
 {% endblock %}
 {% block body_app %}
+`{% csrf_token %}
     <div id="my_menu" class="col-sm-4 col-md-4">
         <ul id="tours" class="nav nav-pills nav-stacked">
             {% for tour in tours %}
             <li data-tour_id="{{ tour.id }}"
                 data-tour_mode="{{ tour.mode }}"
+                data-tour_dstart="{{tour.date_start}}"
+                data-tour_dend="{{tour.date_end}}"
                 data-url="{% url 'round:get_round_in_tour' tour.id %}">
                 <div>
                     {{ tour.name }}
@@ -41,11 +44,14 @@
             <a id="look_image" href="" class="btn btn-default">
                 Look image
             </a>
+            <a id="add_new" href="" class="btn btn-default">
+                Create New
+            </a>
         </div>
     </div>
 
     <div id="modalAddTeam" class="modal fade" role="dialog">
-        {% csrf_token %}
+
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -71,7 +77,6 @@
     <div class="modal fade" id="errorModal" role="dialog">
         <div class="modal-dialog ">
             <div class="modal-content alert alert-danger">
-
                     <button type="button" class="close" data-dismiss="modal">
                         x
                     </button>
@@ -79,6 +84,36 @@
                         <strong>ERROR!</strong>
                         You must to choose teams for generation
                     </h5>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal_add_round" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">x</button>
+                    <h4>Choose type of new round</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="dropdown">
+                        <select id="type_round" class="form-control">
+                        </select>
+                    </div>
+                    <div class="date_end">
+                        <label>Date start:</label>
+                        <input id="date_start" name="date_start" type="text" />
+                    </div>
+                    <div class="date_start">
+                        <label>Date end:</label>
+                        <input id="date_end" name="date_end" type="text" />
+                    </div>
+                    {% if user.is_superuser %}
+                        <a id="create_round" href="" class="btn btn-default" >
+                            Add new
+                        </a>
+                    {% endif %}
+                </div>
             </div>
         </div>
     </div>

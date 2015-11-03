@@ -12,7 +12,6 @@ $(document).ready(function() {
         var date_start = new Date($('input[name=date_start]').val());
         var date_end = new Date($('input[name=date_end]').val());
         if (date_start.getFullYear() > date_end.getFullYear()){
-            console.log(date_start);
             $('#errorModal').modal();
         }else if (date_start.getMonth() > date_end.getMonth()){
             $('#errorModal').modal();

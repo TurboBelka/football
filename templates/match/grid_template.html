@@ -1,0 +1,27 @@
+{% extends 'base_template.html' %}
+{% block links %}
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/grid_style.css' %}"/>
+    <script src="{% static 'django_js_reverse/js/reverse.js' %}"></script>
+    <script src="{% url 'js_reverse' %}" type="text/javascript"></script>
+{% endblock %}
+{% block body_app %}
+    <div class="element">
+        {% for round in all_round %}
+            <div class="col-sm-3">
+                <label class="l">{{ round.get_type_rang_display }}</label>
+                <div>
+                    {% for match in round.match_set.all %}
+                        {% if not match.first_team.logo %}
+                            <img src="{% static 'teams_logo/your-logo-here.png' %}" />
+                        {% else %}
+                            <img src="{{ match.first_team.logo }}" />
+                        {% endif %}
+                        {{ match.first_team.name }}
+                    {% endfor %}
+                </div>
+            </div>
+
+        {% endfor %}
+    </div>
+{% endblock %}

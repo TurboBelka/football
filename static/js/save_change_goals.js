@@ -1,4 +1,6 @@
 $(document).ready(function(){
+
+
     $('input.goal').change(function(){
         console.log(123);
         var url = Urls['match:save_changes']($(this).data('match_id'));

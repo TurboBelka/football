@@ -1,4 +1,6 @@
 import json
+import datetime
+from django.contrib.admin.views.decorators import staff_member_required
 from django.core.urlresolvers import reverse_lazy
 from django.db.models.fields.files import ImageFieldFile
 from django.forms import model_to_dict
@@ -9,6 +11,7 @@ from match.models import Match
 from round_in_game.models import RoundInGame
 from teams.models import Team
 from tournament.models import Tournament
+from django.core.serializers.json import DjangoJSONEncoder
 
 
 class ChooseTourView(ListView):
@@ -19,13 +22,15 @@ class ChooseTourView(ListView):
 
 def get_all_in_tour(request, pk):
     if request.method == 'GET':
-        all_round = RoundInGame.objects.filter(tournament__id=pk)
+        all_round = RoundInGame.objects.filter(tournament__id=pk).order_by('date_start')
         all_round = [{'id': r.id,
                       'type_rang': r.type_rang,
-                      'type_name': r.get_type_rang_display()} for r in
+                      'type_name': r.get_type_rang_display(),
+                      'date_start': r.date_start,
+                      'date_end': r.date_end} for r in
                      all_round]
 
-        return HttpResponse(json.dumps(list(all_round)),
+        return HttpResponse(json.dumps(all_round, cls=DjangoJSONEncoder),
                             content_type='application/json')
     else:
         return HttpResponse(status='400')
@@ -92,6 +97,35 @@ def gen_matchs(request, pk):
                     j += 1
                 i += 1
                 teams_id.reverse()
+        return HttpResponse(reverse_lazy('round:choose_tour'))
+    else:
+        return HttpResponse(status='400')
+
+
+def choose_type(request, pk):
+    if request.method == 'GET':
+        exists_type = RoundInGame.objects.filter(tournament__id=pk).exclude(type_rang=6).values_list(
+                                                'type_rang', flat=True)
+        types_round = dict(RoundInGame.TYPE_RANG)
+        for item in exists_type:
+            if item in types_round.iterkeys():
+                types_round.pop(item)
+
+        return HttpResponse(json.dumps(types_round.values()),
+                            content_type='application/json')
+    else:
+        return HttpResponse(status='400')
+
+
+@staff_member_required
+def create(request):
+    if request.method == 'POST':
+        tour = Tournament.objects.get(id=request.POST['tour_id'])
+        RoundInGame.objects.get_or_create(
+            type_rang=request.POST['type_id'],
+            tournament=tour,
+            date_start=request.POST['date_start'],
+            date_end=request.POST['date_end'])
         return HttpResponse(reverse_lazy('round:choose_tour'))
     else:
         return HttpResponse(status='400')
