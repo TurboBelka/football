@@ -39,6 +39,7 @@ def serialize_image_field(obj):
 
 def get_team_in_tour(request, pk):
     if request.method == 'GET':
+        print pk
         teams_in_tour = Team.objects.filter(tour__id=pk).values('id', 'logo',
                                                                 'name')
 

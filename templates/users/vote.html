@@ -1,0 +1,31 @@
+{% extends 'base_template.html' %}
+{% block links %}
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style_vote.css' %}" />
+    <script src="{% static 'js/vote.js' %}"></script>
+    <script src="https://johnny.github.io/jquery-sortable/js/jquery-sortable.js"></script>
+    <script src="{% static 'django_js_reverse/js/reverse.js' %}"></script>
+    <script src="{% url 'js_reverse' %}" type="text/javascript"></script>
+{% endblock %}
+{% block body_app %}
+    <div class="my_body">
+        <ul class="list-group col-sm-6 col-sm-offset-3 col-md-4 col-md-offset-3 simple_with_animation vertical"
+                        data-tour_id="{{tour_id}}">
+            {% for user in all_users %}
+                <li class="list-group-item"
+                        data-user_id="{{user.id}}">
+                    {% if user.photo %}
+                        <img src="/{{ user.photo }}" />
+                    {% else %}
+                        <img src="{% static 'image/default.png' %}" />
+                    {% endif %}
+                    {{user.user.username}}
+                </li>
+            {% endfor %}
+        </ul>
+        <a id="save_changes" href="" class="btn btn-default">
+            Done
+        </a>
+        {% csrf_token %}
+    </div>
+{% endblock %}

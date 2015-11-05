@@ -1,0 +1,49 @@
+img{
+    height: 30px;
+    width: 30px;
+}
+
+.my_body{
+    display: block;
+}
+
+body.dragging, body.dragging * {
+  cursor: move !important;
+}
+
+.dragged {
+  position: absolute;
+  opacity: 0.5;
+  z-index: 2000;
+}
+
+ul.vertical li.placeholder {
+  position: relative;
+  /** More li styles **/
+}
+ul.vertical li.placeholder:before {
+  position: absolute;
+  /** Define arrowhead **/
+   content: "";
+   border-color: transparent #008eef;
+   border-style: solid;
+   border-width: 0.35em 0 0.35em 0.45em;
+   display: block;
+   height: 0;
+   width: 0;
+   left: -1em;
+   top: 0.9em;
+   position: relative;
+}
+
+ul.simple_with_animation li{
+    display: block;
+    cursor: pointer;
+    padding: 5px;
+    margin: 5px;
+}
+
+ul.simple_with_animation{
+    list-style: none;
+
+}

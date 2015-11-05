@@ -6,6 +6,7 @@ class Tournament(models.Model):
         (1, 'finished'),
         (2, 'current'),
         (3, 'not_started'),
+        (4, 'voted'),
     )
 
     mode = models.SmallIntegerField(choices=MODE_TOUR)

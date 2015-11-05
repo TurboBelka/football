@@ -1,0 +1,29 @@
+{% extends 'base_template.html' %}
+{% block links %}
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/results.css' %}" />
+{% endblock %}
+{% block body_app %}
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th rowspan="2">Team name</th>
+                <th rowspan="2">Played Games</th>
+                <th rowspan="2">Victory</th>
+                <th rowspan="2">Defeat</th>
+                <th colspan="2">Goals</th>
+                <th rowspan="2">Difference goals</th>
+                <th rowspan="2">Points</th>
+            </tr>
+            <tr>
+                <th>Scored</th>
+                <th>Missed</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                {{ all_goals }}
+            </tr>
+        </tbody>
+    </table>
+{% endblock %}

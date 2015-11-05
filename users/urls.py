@@ -13,5 +13,7 @@ urlpatterns = [
     url(r'^vk_login', views.vk_login, name='vk_login'),
     url(r'^fb_login', views.fb_login, name='fb_login'),
     url(r'^my_profile', views.my_profile, name='my_profile'),
-    url(r'^change_pass', views.change_pass, name='change_pass')
+    url(r'^change_pass', views.change_pass, name='change_pass'),
+    url(r'^(?P<pk>[0-9]+)/vote', views.vote, name='vote'),
+    url(r'^res_vote', views.save_res_vote, name='res_vote'),
 ]

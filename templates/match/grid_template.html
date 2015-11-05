@@ -4,20 +4,67 @@
     <link rel="stylesheet" href="{% static 'css/grid_style.css' %}"/>
     <script src="{% static 'django_js_reverse/js/reverse.js' %}"></script>
     <script src="{% url 'js_reverse' %}" type="text/javascript"></script>
+    <script src="{% static 'js/save_change_goals.js' %}" type="text/javascript"></script>
 {% endblock %}
 {% block body_app %}
     <div class="element">
         {% for round in all_round %}
-            <div class="col-sm-3">
+            <div class="col-sm-3 col-xs-3">
                 <label class="l">{{ round.get_type_rang_display }}</label>
                 <div>
                     {% for match in round.match_set.all %}
-                        {% if not match.first_team.logo %}
-                            <img src="{% static 'teams_logo/your-logo-here.png' %}" />
-                        {% else %}
-                            <img src="{{ match.first_team.logo }}" />
-                        {% endif %}
-                        {{ match.first_team.name }}
+                    <table class="table table-bordered">
+                        <tbody>
+                            <tr>
+                                <td>
+                                    {% if not match.first_team.logo %}
+                                        <img src="{% static 'teams_logo/your-logo-here.png' %}" />
+                                    {% else %}
+                                        <img src="{{ match.first_team.logo }}" />
+                                    {% endif %}
+                                    {{ match.first_team.name }}
+                                </td>
+                                 <td>
+                                {% if not match.second_team_goals %}
+                                    {% if user.is_superuser %}
+                                        <input class="goal"
+                                           data-match_id="{{ match.id }}"
+                                           data-team="first"
+                                           type="text" />
+                                    {% else %}
+                                        <p>-</p>
+                                    {% endif %}
+                                {% else %}
+                                    {{ match.first_team_goals }}
+                                {% endif %}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    {% if not match.first_team.logo %}
+                                        <img src="{% static 'teams_logo/your-logo-here.png' %}" />
+                                    {% else %}
+                                        <img src="{{ match.second_team.logo }}" />
+                                    {% endif %}
+                                    {{ match.second_team.name }}
+                                </td>
+                                <td>
+                                {% if not match.second_team_goals %}
+                                    {% if user.is_superuser %}
+                                        <input class="goal"
+                                           data-match_id="{{ match.id }}"
+                                           data-team="second"
+                                           type="text" />
+                                    {% else %}
+                                        <p>-</p>
+                                    {% endif %}
+                                {% else %}
+                                    {{ match.second_team_goals }}
+                                {% endif %}
+                                </td>
+                            </tr>
+                        </tbody>
+                     </table>
                     {% endfor %}
                 </div>
             </div>

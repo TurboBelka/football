@@ -2,10 +2,11 @@ import json
 from tempfile import NamedTemporaryFile
 from django.core.files import File
 from django.core.urlresolvers import reverse_lazy
-from django.db.models import Avg, Max
+from django.db.models import Avg, Max, Q
 from django.shortcuts import render, redirect
 from django.views import generic
 from football.settings import VK_API_SECRET, VK_CLIENT_ID
+from match.models import Match
 from .models import Users
 from django.http import HttpResponseRedirect, HttpResponse
 from .forms import RegistrationForm, ProfileForm, MyPasswordChangeForm
@@ -15,6 +16,9 @@ from django.contrib.auth import login
 from django.contrib.auth.views import login as django_login
 from django.contrib.auth.decorators import login_required
 from rang.models import Rang
+from round_in_game.models import RoundInGame
+from teams.models import Team
+from tournament.models import Tournament
 
 
 def get_current_user(request):
@@ -154,9 +158,17 @@ def my_profile(request):
                 'form': my_form
             })
     else:
+        must_to_vote = False
+        my_user = request.user.users.first_user.all() | request.user.users.second_user.all()
+        tours = my_user.filter(tour__mode=4).values('tour', 'tour__name')
+        cur_user_in = my_user.filter(tour__mode=4).exists()
+        if cur_user_in:
+            must_to_vote = True
         return render(request, 'users/my_profile.html', context={
             'form': ProfileForm(instance=request.user),
-            'change_pass': MyPasswordChangeForm(user=request.user)
+            'change_pass': MyPasswordChangeForm(user=request.user),
+            'must_to_vote': must_to_vote,
+            'tours': tours
         })
 
 
@@ -179,3 +191,43 @@ class UsersView(generic.ListView):
     template_name = 'users/index.html'
     context_object_name = 'users_list'
     model = Users
+
+
+def vote(request, pk):
+    all_users = Users.objects.filter(Q(first_user__tour__id=pk) |
+                                     Q(second_user__tour__id=pk)).exclude(
+                                    user=request.user)
+    return render(request, 'users/vote.html', context={
+        'all_users': all_users,
+        'tour_id': pk})
+
+
+def save_res_vote(request):
+    if request.method == 'POST':
+        all_users = json.loads(request.POST['new_position'])
+        tour_id = request.POST['tour_id']
+        print
+        delta = 100 / len(all_users)
+
+        new_points = {}
+        max_point = 100
+        for item in all_users:
+            new_points[item] = max_point
+            max_point -= delta
+
+        last_ranges = Rang.objects.filter(tournament_id=tour_id)
+
+        for item in last_ranges:
+            for user_id, point in new_points.iteritems():
+                if item.user_id == user_id:
+                    tmp_rang = (item.rang * item.count) + point
+                    new_count = item.count + 1
+                    new_rang = tmp_rang / new_count
+                    Rang.objects.filter(user_id=item.user_id).update(rang=new_rang,
+                                                                     count=new_count)
+
+
+
+        return HttpResponse(reverse_lazy('index:index'))
+    else:
+        return HttpResponse(status='400')

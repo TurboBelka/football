@@ -7,7 +7,7 @@
     <script src="{% url 'js_reverse' %}" type="text/javascript"></script>
 {% endblock %}
 {% block body_app %}
-`{% csrf_token %}
+{% csrf_token %}
     <div id="my_menu" class="col-sm-4 col-md-4">
         <ul id="tours" class="nav nav-pills nav-stacked">
             {% for tour in tours %}

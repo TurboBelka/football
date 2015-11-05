@@ -1,4 +1,7 @@
-
+html{
+    position: relative;
+    min-height: 100%;
+}
 
 ul#menu{
   margin: 16px 0px 0px 25px;
@@ -34,13 +37,17 @@ div#menu_list{
 }
 
 div#foot{
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 50px;
     padding: 13px 0px 0px 0px;
     text-align: center;
     color: gray;
+    border-top: 1px solid #4285F4;
 }
 
 div#body_div{
-    margin: 0px 0px 0px 0px;
+    margin-bottom: 60px;
     padding: 0px 0px 16px 0px;
-    border-bottom: 1px solid #4285F4;
 }
