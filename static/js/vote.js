@@ -2,9 +2,9 @@ $(document).ready(function(){
     var adjustment;
 
     $(".simple_with_animation").sortable({
-      group: 'simple_with_animation',
-      pullPlaceholder: false,
-      // animation on drop
+//      group: 'simple_with_animation',
+//      pullPlaceholder: false,
+//      // animation on drop
       onDrop: function  ($item, container, _super) {
         var $clonedItem = $('<li/>').css({height: 0});
         $item.before($clonedItem);
@@ -15,25 +15,6 @@ $(document).ready(function(){
           _super($item, container);
         });
       },
-
-      // set $item relative to cursor position
-      onDragStart: function ($item, container, _super) {
-        var offset = $item.offset(),
-            pointer = container.rootGroup.pointer;
-
-        adjustment = {
-          left: pointer.left - offset.left,
-          top: pointer.top - offset.top
-        };
-
-        _super($item, container);
-      },
-      onDrag: function ($item, position) {
-        $item.css({
-          left: position.left - adjustment.left,
-          top: position.top - adjustment.top
-        });
-      }
     });
 
     $('#save_changes').click(function(eventObj){
@@ -47,6 +28,18 @@ $(document).ready(function(){
             'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val(),
             'tour_id': $('.simple_with_animation').data('tour_id')
         };
+        var all_tours = [];
+        var my_cookies = Cookies.get('tour_id');
+
+        if (my_cookies){
+            all_tours = JSON.parse(unescape(my_cookies));
+            console.log(all_tours);
+            all_tours.push($('.simple_with_animation').data('tour_id'));
+            Cookies.set('tour_id', escape(JSON.stringify(all_tours)));
+        }else{
+            Cookies.set('tour_id', escape(JSON.stringify([$('.simple_with_animation').data('tour_id')])));
+        }
+
         $.ajax({
             url: Urls['index:res_vote'](),
             data: data,

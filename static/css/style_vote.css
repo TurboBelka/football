@@ -13,17 +13,16 @@ body.dragging, body.dragging * {
 
 .dragged {
   position: absolute;
+  top: 0;
   opacity: 0.5;
   z-index: 2000;
 }
 
-ul.vertical li.placeholder {
+.vertical li.placeholder {
   position: relative;
-  /** More li styles **/
 }
-ul.vertical li.placeholder:before {
+.vertical li.placeholder:before {
   position: absolute;
-  /** Define arrowhead **/
    content: "";
    border-color: transparent #008eef;
    border-style: solid;
@@ -36,14 +35,14 @@ ul.vertical li.placeholder:before {
    position: relative;
 }
 
-ul.simple_with_animation li{
+.simple_with_animation li{
     display: block;
     cursor: pointer;
     padding: 5px;
     margin: 5px;
 }
 
-ul.simple_with_animation{
+.simple_with_animation{
     list-style: none;
-
+    min-height: 10px;
 }

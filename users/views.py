@@ -1,12 +1,13 @@
 import json
 from tempfile import NamedTemporaryFile
+import urllib
+from django.contrib import auth
 from django.core.files import File
 from django.core.urlresolvers import reverse_lazy
 from django.db.models import Avg, Max, Q
 from django.shortcuts import render, redirect
 from django.views import generic
 from football.settings import VK_API_SECRET, VK_CLIENT_ID
-from match.models import Match
 from .models import Users
 from django.http import HttpResponseRedirect, HttpResponse
 from .forms import RegistrationForm, ProfileForm, MyPasswordChangeForm
@@ -16,13 +17,16 @@ from django.contrib.auth import login
 from django.contrib.auth.views import login as django_login
 from django.contrib.auth.decorators import login_required
 from rang.models import Rang
-from round_in_game.models import RoundInGame
-from teams.models import Team
-from tournament.models import Tournament
 
 
 def get_current_user(request):
     return render(request, 'users/loggedin.html')
+
+
+def logout(request):
+    response = auth.views.logout(request, next_page='/index/')
+    response.delete_cookie('tour_id')
+    return response
 
 
 def vk_login(request):
@@ -116,7 +120,7 @@ def set_rang(user):
             id_arr.append(item['id__max'])
         res = Rang.objects.filter(id__in=id_arr).aggregate(Avg('rang'))
         # rang_for_new_user = random.randint(0, my_round(res['rang__avg']))
-        Rang.objects.create(rang=round(res['rang__avg'])*0.7,
+        Rang.objects.create(rang=round(res['rang__avg']) * 0.7,
                             user=user)
 
 
@@ -160,9 +164,17 @@ def my_profile(request):
     else:
         must_to_vote = False
         my_user = request.user.users.first_user.all() | request.user.users.second_user.all()
-        tours = my_user.filter(tour__mode=4).values('tour', 'tour__name')
+        tours = None
+        if request.COOKIES.get('tour_id'):
+            already_voted = urllib.unquote(urllib.unquote(request.COOKIES.get('tour_id')))
+            already_voted = json.loads(already_voted)
+            if already_voted:
+                tours = my_user.filter(tour__mode=4).exclude(tour__id__in=already_voted).values('tour', 'tour__name')
+        else:
+            tours = my_user.filter(tour__mode=4).values('tour', 'tour__name')
+
         cur_user_in = my_user.filter(tour__mode=4).exists()
-        if cur_user_in:
+        if cur_user_in and tours:
             must_to_vote = True
         return render(request, 'users/my_profile.html', context={
             'form': ProfileForm(instance=request.user),
@@ -196,7 +208,7 @@ class UsersView(generic.ListView):
 def vote(request, pk):
     all_users = Users.objects.filter(Q(first_user__tour__id=pk) |
                                      Q(second_user__tour__id=pk)).exclude(
-                                    user=request.user)
+        user=request.user)
     return render(request, 'users/vote.html', context={
         'all_users': all_users,
         'tour_id': pk})
@@ -206,7 +218,9 @@ def save_res_vote(request):
     if request.method == 'POST':
         all_users = json.loads(request.POST['new_position'])
         tour_id = request.POST['tour_id']
-        print
+        already_voted = []
+        if tour_id not in already_voted:
+            already_voted.append(tour_id)
         delta = 100 / len(all_users)
 
         new_points = {}
@@ -218,16 +232,13 @@ def save_res_vote(request):
         last_ranges = Rang.objects.filter(tournament_id=tour_id)
 
         for item in last_ranges:
-            for user_id, point in new_points.iteritems():
-                if item.user_id == user_id:
-                    tmp_rang = (item.rang * item.count) + point
-                    new_count = item.count + 1
-                    new_rang = tmp_rang / new_count
-                    Rang.objects.filter(user_id=item.user_id).update(rang=new_rang,
-                                                                     count=new_count)
-
-
-
-        return HttpResponse(reverse_lazy('index:index'))
+            if item.user_id in new_points:
+                tmp_rang = (item.rang * item.count) + new_points[item.user_id]
+                new_count = item.count + 1
+                new_rang = tmp_rang / new_count
+                Rang.objects.filter(user_id=item.user_id).update(
+                                    rang=new_rang,
+                                    count=new_count)
+        return HttpResponse(reverse_lazy('index:my_profile'))
     else:
         return HttpResponse(status='400')

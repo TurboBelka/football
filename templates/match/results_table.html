@@ -21,9 +21,25 @@
             </tr>
         </thead>
         <tbody>
-            <tr>
-                {{ all_goals }}
-            </tr>
+            {% for raw in res_table %}
+                <tr>
+                    <td>
+                        {% if raw.logo %}
+                            <img src="/{{raw.logo}}" />
+                        {% else %}
+                            <img src="{% static 'teams_logo/your-logo-here.png' %}" />
+                        {% endif %}
+                        {{ raw.name }}
+                    </td>
+                    <td>{{ raw.count_games }}</td>
+                    <td>{{ raw.first_victory }}</td>
+                    <td>{{ raw.first_defeat }}</td>
+                    <td>{{ raw.goals_scored }}</td>
+                    <td>{{ raw.goals_missed }}</td>
+                    <td>{{ raw.difference }}</td>
+                    <td>{{ raw.points }}</td>
+                </tr>
+            {% endfor %}
         </tbody>
     </table>
 {% endblock %}

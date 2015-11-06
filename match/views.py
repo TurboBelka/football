@@ -57,21 +57,35 @@ def grid(request, pk):
 
 
 def results(request, pk):
-    my_query = '''select sum(first_team_goals), first_team_id
-        from (select match_match.first_team_id, match_match.first_team_goals
-        from match_match
-            join round_in_game_roundingame on match_match.my_round_id=round_in_game_roundingame.id
-            join tournament_tournament on round_in_game_roundingame.tournament_id=tournament_tournament.id
-        where round_in_game_roundingame.type_rang=6 and tournament_tournament.id=%(tour_id)s
-        union all
-        select match_match.second_team_id as first_team_id, match_match.second_team_goals as first_team_goals
-        from match_match
-            join round_in_game_roundingame on match_match.my_round_id=round_in_game_roundingame.id
-            join tournament_tournament on round_in_game_roundingame.tournament_id=tournament_tournament.id
-        where round_in_game_roundingame.type_rang=6 and tournament_tournament.id=%(tour_id)s) as p
-        group by first_team_id''' % dict(tour_id=pk)
+    my_query = '''select teams_team.id, teams_team.logo, teams_team.name, count(p.id) as count_games, sum(first_team_goals) as goals_scored, sum(second_team_goals) as goals_missed, first_team_id, sum(first_team_win) as first_victory,
+                sum(second_team_win) as first_defeat, sum(first_team_win)*3 as points,
+                case when sum(first_team_goals) > sum(second_team_goals) then sum(first_team_goals) - sum(second_team_goals)
+                    else sum(second_team_goals) - sum(first_team_goals) end as difference
+                from (
+                    select match_match.first_team_id, match_match.first_team_goals, match_match.id as id, match_match.second_team_goals,
+                            case when match_match.first_team_goals > match_match.second_team_goals then 1 else 0 end as first_team_win,
+                            case when match_match.second_team_goals > match_match.first_team_goals then 1 else 0 end as second_team_win
+                    from match_match
+                        join round_in_game_roundingame on match_match.my_round_id=round_in_game_roundingame.id
+                        join tournament_tournament on round_in_game_roundingame.tournament_id=tournament_tournament.id
+                    where round_in_game_roundingame.type_rang=%(round_type)s and tournament_tournament.id=%(tour_id)s
+                    union all
+                    select match_match.second_team_id as first_team_id, match_match.second_team_goals as first_team_goals, match_match.id as id,
+                            match_match.first_team_goals as second_team_goals,
+                            case when match_match.second_team_goals > match_match.first_team_goals then 1 else 0 end as first_team_win,
+                            case when match_match.first_team_goals > match_match.second_team_goals then 1 else 0 end as second_team_win
+                    from match_match
+                        join round_in_game_roundingame on match_match.my_round_id=round_in_game_roundingame.id
+                        join tournament_tournament on round_in_game_roundingame.tournament_id=tournament_tournament.id
+                    where round_in_game_roundingame.type_rang=%(round_type)s and tournament_tournament.id=%(tour_id)s) as p
+                    join teams_team on teams_team.id=p.first_team_id
+                group by first_team_id
+                order by points desc, goals_scored desc''' % dict(tour_id=pk, round_type=6)
 
-
+    res_table = Match.objects.raw(my_query)
+    print res_table[0]
+    for r in res_table:
+        print r
     return render(request, 'match/results_table.html', context={
-        'all_goals': ''
+        'res_table': res_table
     })

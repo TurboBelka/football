@@ -20,6 +20,7 @@ $(document).ready(function(){
         });
     });
 
+
     $('#all_tours').change(function(){
         var url = Urls['index:vote']($('#all_tours option:selected').data('tour_id'))
         $('#next_step').attr('href', url);
