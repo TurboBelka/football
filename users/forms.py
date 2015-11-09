@@ -2,18 +2,27 @@ from PIL import Image
 from django.forms import ImageField
 from django.contrib.auth.models import User
 from .models import Users
-from django.contrib.auth.forms import UserCreationForm, PasswordChangeForm
+from django.contrib.auth.forms import UserCreationForm, PasswordChangeForm, \
+    AuthenticationForm
 from django.forms import ModelForm
 
 
-class MyPasswordChangeForm(PasswordChangeForm):
+class FormControlMixin(object):
     def __init__(self, *args, **kwargs):
-        super(PasswordChangeForm, self).__init__(*args, **kwargs)
+        super(FormControlMixin, self).__init__(*args, **kwargs)
         for field in self.fields.itervalues():
             field.widget.attrs.update({'class': 'form-control'})
 
 
-class RegistrationForm(UserCreationForm):
+class MyPasswordChangeForm(FormControlMixin, PasswordChangeForm):
+    pass
+
+
+class AuthForm(FormControlMixin, AuthenticationForm):
+    pass
+
+
+class RegistrationForm(FormControlMixin, UserCreationForm):
     photo = ImageField(required=False)
 
     class Meta:
@@ -26,14 +35,12 @@ class RegistrationForm(UserCreationForm):
         new_user = Users(user=user)
         if self.cleaned_data['photo']:
             new_user.photo = self.cleaned_data['photo']
-            if commit:
-                new_user.save()
             image = Image.open(new_user.photo)
             size = (50, 50)
             image = image.resize(size, Image.ANTIALIAS)
             image.save(new_user.photo)
-
-
+        if commit:
+            new_user.save()
         return new_user
 
 

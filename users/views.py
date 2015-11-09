@@ -10,7 +10,7 @@ from django.views import generic
 from football.settings import VK_API_SECRET, VK_CLIENT_ID
 from .models import Users
 from django.http import HttpResponseRedirect, HttpResponse
-from .forms import RegistrationForm, ProfileForm, MyPasswordChangeForm
+from .forms import RegistrationForm, ProfileForm, MyPasswordChangeForm, AuthForm
 import requests
 from django.contrib.auth.models import User
 from django.contrib.auth import login
@@ -130,11 +130,11 @@ def register_user(request):
         if form.is_valid():
             my_new_user = form.save()
             set_rang(my_new_user)
-
             return HttpResponseRedirect(reverse_lazy('index:index'))
         else:
             return render(request, 'users/registration.html', context={
-                'form': form})
+                'form': form
+            })
     else:
         return render(request, 'users/registration.html', context={
             'form': RegistrationForm()
@@ -145,7 +145,8 @@ def block_login_page(request):
     if request.user.is_authenticated():
         return HttpResponseRedirect('/index/')
     else:
-        return django_login(request, 'users/login.html')
+        return django_login(request, 'users/login.html',
+                            authentication_form=AuthForm)
 
 
 @login_required(login_url='/index/login/')

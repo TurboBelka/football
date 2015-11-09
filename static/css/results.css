@@ -5,3 +5,7 @@ th{
 .table thead>tr>th{
     vertical-align: middle;
 }
+
+td{
+    text-align: center;
+}

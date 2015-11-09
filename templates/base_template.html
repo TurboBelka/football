@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TableSoccer</title>
     {% load static %}
 
@@ -21,44 +21,57 @@
 <link rel="stylesheet" href="{% static 'css/bootstrap-datepicker3.standalone.min.css' %}"/>
 <script src="{% static 'js/bootstrap-datepicker.min.js' %}" ></script>
 
+        <!-- Custom Fonts -->
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Merriweather:400,300,300italic,400italic,700,700italic,900,900italic' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="{% static 'css/font-awesome.min.css' %}" type="text/css">
+
+    <link rel="stylesheet" href="{% static 'css/creative.css' %}" type="text/css">
+
     {% block links %}
     {% endblock %}
 </head>
-<body>
-<nav class="navbar navbar-default">
-    <div id="menu_list" class="container-fluid">
-        <div class="collapse navbar-collapse">
-        <ul id="menu" class="nav navbar-nav">
-         {% for k, v in my_menus.items %}
+<div class="navbar navbar-default" role="navigation">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse"
+                        data-target=".navbar-collapse">
+                    <span class="glyphicon glyphicon-align-justify"></span>
+                </button>
+            </div>
+            <div class="collapse navbar-collapse">
+                <ul id="menu" class="nav navbar-nav">
+                 {% for k, v in my_menus.items %}
 
-            <li {% if k == title %} class="active" {% endif %}>
-                    {% if k == 'LogIn' %}
-                        <a href="{{ v }}?next={{ request.path }}">{{ k }}</a>
-                    {% else %}
-                        <a  href="{{ v }}">{{ k }}</a>
-                    {% endif %}
-            </li>
-            {% endfor %}
-        </ul>
+                    <li {% if k == title %} class="active" {% endif %}>
+                            {% if k == 'LogIn' %}
+                                <a href="{{ v }}?next={{ request.path }}">{{ k }}</a>
+                            {% else %}
+                                <a  href="{{ v }}">{{ k }}</a>
+                            {% endif %}
+                    </li>
+                    {% endfor %}
+                </ul>
 
-        <p class="navbar-text navbar-right">
+                <p class="navbar-text navbar-right">
 
-                {% block user_name %}
-                {% if user.is_authenticated %}
-                    <a href="#" class="navbar-link">
-                        {{ user.username }}
-                    </a>
-                {% else %}
-                    <a href="#myLoginForm" class="btn btn-dafeault" role="button"
-                       data-toggle="modal">
-                            Login
-                    </a>
-                {% endif %}
-                {% endblock %}
-        </p>
+                        {% block user_name %}
+                        {% if user.is_authenticated %}
+                            <a href="#" class="navbar-link">
+                                {{ user.username }}
+                            </a>
+                        {% else %}
+                            <a href="#myLoginForm" class="btn btn-dafeault" role="button"
+                               data-toggle="modal">
+                                    Login
+                            </a>
+                        {% endif %}
+                        {% endblock %}
+                </p>
+
+            </div>
         </div>
-    </div>
-</nav>
+</div>
 <div id="body_div" class="container-fluid">
     {% block body_app %}
     {% endblock %}

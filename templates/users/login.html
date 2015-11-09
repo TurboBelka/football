@@ -9,21 +9,23 @@
         fjs.parentNode.insertBefore(js, fjs);
     }(document, 'script', 'facebook-jssdk'));
 </script>
-    <form method="post" action="">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <input type="submit" class="btn btn-default" value="Login" />
-    </form>
-    <a href="/index/registration/" class="btn btn-default">
-        Registration
-    </a>
- <!-- VK registration -->
-    {% load static %}
-    <a href="https://oauth.vk.com/authorize?client_id=5098165&display=popup&redirect_uri=http://localhost:8000/index/vk_login&scope=photos,email&response_type=code&v=5.37">
-        <img src="{% static 'image/vk_icon.png' %}" style="height: 30px; weidth: 30px;"  />
-    </a>
-    <a href="#" onclick="doLogin()">
-        <script src="{% static 'js/fb_login.js' %}"></script>
-        <img src="{% static 'image/fb_icon.jpeg' %}" style="height: 30px; weidth: 30px;" />
-    </a>
+    <div class="col-sm-4 col-sm-offset-4 col-md-4 col-md-offset-4">
+        <form method="post" action="">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <input type="submit" class="btn btn-default" value="Login" />
+        </form>
+        <a href="/index/registration/" class="btn btn-default">
+            Registration
+        </a>
+     <!-- VK registration -->
+        {% load static %}
+        <a href="https://oauth.vk.com/authorize?client_id=5098165&display=popup&redirect_uri=http://localhost:8000/index/vk_login&scope=photos,email&response_type=code&v=5.37">
+            <img src="{% static 'image/vk_icon.png' %}" style="height: 30px; weidth: 30px;"  />
+        </a>
+        <a href="#" onclick="doLogin()">
+            <script src="{% static 'js/fb_login.js' %}"></script>
+            <img src="{% static 'image/fb_icon.jpeg' %}" style="height: 30px; weidth: 30px;" />
+        </a>
+    </div>
 {% endblock %}
