@@ -1,0 +1,8 @@
+.table>tbody>tr>td{
+    vertical-align: middle;
+}
+
+.goal{
+    display: table-cell;
+    width: 40px;
+}

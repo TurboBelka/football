@@ -6,6 +6,7 @@ th{
     vertical-align: middle;
 }
 
-td{
-    text-align: center;
+.table tbody>tr>td{
+    display: table-cell;
+    vertical-align: middle;
 }

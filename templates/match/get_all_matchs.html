@@ -4,6 +4,7 @@
     <script src="{% static 'js/save_change_goals.js' %}"></script>
     <script src="{% static 'django_js_reverse/js/reverse.js' %}"></script>
     <script src="{% url 'js_reverse' %}" type="text/javascript"></script>
+    <link rel="stylesheet" href="{% static 'css/style_match.css' %}" />
 {% endblock %}
 {% block body_app %}
     <div>
@@ -37,7 +38,7 @@
                         <td class="text-center">
                             {% if match.first_team_goals == None %}
                                 {% if user.is_superuser %}
-                                    <input class="goal"
+                                    <input class="goal form-control"
                                            data-match_id="{{ match.id }}"
                                            data-team="first"
                                            type="text" />
@@ -51,7 +52,7 @@
                         <td class="text-center">
                              {% if match.second_team_goals == None%}
                                 {% if user.is_superuser %}
-                                    <input class="goal"
+                                    <input class="goal form-control"
                                            data-match_id="{{ match.id }}"
                                            data-team="second"
                                            type="text" />

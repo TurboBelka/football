@@ -9,22 +9,24 @@
                 action="{% url 'index:registration' %}">
             {% csrf_token %}
             {% for item in form %}
-            <div class="form-group
-                    {% if item.errors %} has-error {% endif %} ">
-                    <strong>{{ item.label }} :</strong>
+                <div class="form-group
+                        {% if item.errors %} has-error {% endif %} ">
+                        <strong>{{ item.label }} :</strong>
 
-                    <p>
-                        {{ item }}
+                        <p>
+                            {{ item }}
 
-                        <span class="help-block">
-                            {% if item.errors %}
-                                {{ item.errors }}
-                            {% else %}
-                                {{ item.help_text }}
-                            {% endif %}
-                        </span>
-                    </p>
-            </div>
+                            <span class="help-block">
+                                {% if item.errors %}
+                                    {% for error in item.errors %}
+                                           {{ error }}
+                                    {% endfor %}
+                                {% else %}
+                                    {{ item.help_text }}
+                                {% endif %}
+                            </span>
+                        </p>
+                </div>
             {% endfor %}
             <div>
                  <input type="submit" class="btn btn-default" value="Registrate" />

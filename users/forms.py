@@ -44,7 +44,7 @@ class RegistrationForm(FormControlMixin, UserCreationForm):
         return new_user
 
 
-class ProfileForm(ModelForm):
+class ProfileForm(FormControlMixin, ModelForm):
     photo = ImageField(required=False)
 
     class Meta:

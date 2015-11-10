@@ -3,7 +3,14 @@ from django.forms import ModelForm
 from tournament.models import Tournament
 
 
-class CreateTourForm(ModelForm):
+class FormControlMixin(object):
+    def __init__(self, *args, **kwargs):
+        super(FormControlMixin, self).__init__(*args, **kwargs)
+        for field in self.fields.itervalues():
+            field.widget.attrs.update({'class': 'form-control'})
+
+
+class CreateTourForm(FormControlMixin, ModelForm):
     class Meta:
         model = Tournament
         fields = ['name', 'mode', 'date_start', 'date_end']
@@ -18,7 +25,7 @@ class CreateTourForm(ModelForm):
         return cleaned_data
 
 
-class EditTourForm(ModelForm):
+class EditTourForm(FormControlMixin, ModelForm):
     class Meta:
         model = Tournament
         fields = ['name', 'mode', 'date_start', 'date_end']
