@@ -13,3 +13,8 @@ li:hover{
 #all_teams > li.choosed{
     background-color: #C0C0C0;
 }
+
+.inline{
+    display: inline;
+    width: 30%;
+}

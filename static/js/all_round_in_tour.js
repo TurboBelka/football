@@ -41,7 +41,7 @@ $(document).ready(function() {
             success: function(response){
                 $('#teams_in_round').empty();
                 $.each(response, function(key, val){
-                    if (val['logo']==""){
+                    if (val['logo']==null){
                         val['logo']="/static/teams_logo/your-logo-here.png"
                     }
                     $('#teams_in_round').append(

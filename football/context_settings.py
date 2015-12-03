@@ -22,6 +22,7 @@ def get_names(request):
         my_menus['Round'] = reverse_lazy('round:choose_tour')
         my_menus['Match'] = reverse_lazy('match:match', kwargs={'pk': 1})
         last_tour_id = Tournament.objects.order_by('-id').distinct().values_list('id', flat=True)
-        my_menus['Results'] = reverse_lazy('match:results', kwargs={'pk': last_tour_id[0]})
+        if last_tour_id:
+            my_menus['Results'] = reverse_lazy('match:results', kwargs={'pk': last_tour_id[0]})
         my_menus['LogOut'] = reverse_lazy('index:logout')
         return {'my_menus': my_menus}

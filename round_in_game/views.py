@@ -7,11 +7,16 @@ from django.forms import model_to_dict
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django.views.generic import ListView
+from rest_framework.generics import ListAPIView
 from match.models import Match
 from round_in_game.models import RoundInGame
 from teams.models import Team
 from tournament.models import Tournament
 from django.core.serializers.json import DjangoJSONEncoder
+from round_in_game.serializer import TeamSerializer
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from rest_framework import status
 
 
 class ChooseTourView(ListView):
@@ -44,19 +49,39 @@ def serialize_image_field(obj):
             return ""
 
 
-def get_teams(request, pk):
-    if request.method == 'GET':
-        all_teams = Match.objects.filter(my_round_id=pk).values('first_team_id',
+# def get_teams(request, pk):
+#     if request.method == 'GET':
+#         all_teams = Match.objects.filter(my_round_id=pk).values('first_team_id',
+#                                                              'second_team_id')
+#         teams_id = {i for item in all_teams for i in item.itervalues()}
+#         teams_in_round = Team.objects.filter(id__in=teams_id)
+#         teams = []
+#         for item in teams_in_round:
+#             teams.append(model_to_dict(item, fields=['id', 'name', 'logo']))
+#         return HttpResponse(json.dumps(teams, default=serialize_image_field),
+#                             content_type='application/json')
+#     else:
+#         return HttpResponse(status='400')
+
+# @api_view(['GET', ])
+# def get_teams(request, pk):
+#     if request.method == 'GET':
+#         all_teams = Match.objects.filter(my_round_id=pk).values('first_team_id',
+#                                                              'second_team_id')
+#         teams_id = {i for item in all_teams for i in item.itervalues()}
+#         teams_in_round = Team.objects.filter(id__in=teams_id)
+#         serializer = TeamSerializer(teams_in_round, many=True)
+#         return Response(serializer.data)
+#     return Response(status=status.HTTP_400_BAD_REQUEST)
+
+class TeamList(ListAPIView):
+    serializer_class = TeamSerializer
+
+    def get_queryset(self):
+        all_teams = Match.objects.filter(my_round_id=self.kwargs['pk']).values('first_team_id',
                                                              'second_team_id')
         teams_id = {i for item in all_teams for i in item.itervalues()}
-        teams_in_round = Team.objects.filter(id__in=teams_id)
-        teams = []
-        for item in teams_in_round:
-            teams.append(model_to_dict(item, fields=['id', 'name', 'logo']))
-        return HttpResponse(json.dumps(teams, default=serialize_image_field),
-                            content_type='application/json')
-    else:
-        return HttpResponse(status='400')
+        return Team.objects.filter(id__in=teams_id)
 
 
 def add_teams(request, pk):

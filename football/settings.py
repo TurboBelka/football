@@ -46,6 +46,7 @@ INSTALLED_APPS = (
     'rang',
 
     'django_js_reverse',
+    'rest_framework',
 )
 
 MIDDLEWARE_CLASSES = (

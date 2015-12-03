@@ -14,3 +14,8 @@ class Tournament(models.Model):
     date_start = models.DateField()
     date_end = models.DateField()
 
+    def check_date(self):
+        if self.date_end > self.date_start:
+            return True
+        else:
+            return False
